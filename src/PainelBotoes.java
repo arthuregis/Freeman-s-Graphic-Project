@@ -5,6 +5,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
@@ -12,7 +13,7 @@ import javax.swing.JPanel;
 public class PainelBotoes extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JButton cadeiaFreeman, desfazer, refazer, limpar;
-	private JButton quadrado,livre,triangulo, cor;
+	private JButton quadrado,livre,triangulo, cor, cor2;
 	private JPanel figuras, cores, acoes;
 	private PainelDesenho painel_ativo;
 		
@@ -21,15 +22,20 @@ public class PainelBotoes extends JPanel {
 		painel_ativo = painel;
 		
 		figuras = new JPanel();
+		figuras.setBackground(Color.DARK_GRAY);
 		figuras.setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		cores = new JPanel();
+		cores.setBackground(Color.DARK_GRAY);
 		cores.setLayout(new FlowLayout(FlowLayout.CENTER));
 		
 		acoes = new JPanel();
+		acoes.setBackground(Color.DARK_GRAY);
 		acoes.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		
-		livre = new JButton("Livre");
+		livre = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\livre.png"));
+		livre.setMargin(new Insets(1,1,1,1));
+		livre.setToolTipText("Livre");
 		livre.addActionListener(new ActionListener() {
 
 			@Override
@@ -39,7 +45,9 @@ public class PainelBotoes extends JPanel {
 		});
 		figuras.add(livre);
 		
-		cadeiaFreeman = new JButton("Freeman");
+		cadeiaFreeman = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\freeman.png"));
+		cadeiaFreeman.setMargin(new Insets(1,1,1,1));
+		cadeiaFreeman.setToolTipText("Freeman");
 		cadeiaFreeman.addActionListener(new ActionListener() {
 	
 			@Override
@@ -49,7 +57,9 @@ public class PainelBotoes extends JPanel {
 		});
 		figuras.add(cadeiaFreeman);
 		
-		quadrado = new JButton("Quadrado");
+		quadrado = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\quadrado.png"));
+		quadrado.setMargin(new Insets(1,1,1,1));
+		quadrado.setToolTipText("Quadrado");
 		quadrado.addActionListener(new ActionListener() {
 
 			@Override
@@ -59,7 +69,9 @@ public class PainelBotoes extends JPanel {
 		});
 		figuras.add(quadrado);
 		
-		triangulo = new JButton("Triangulo");
+		triangulo = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\triangulo.png"));
+		triangulo.setMargin(new Insets(1,1,1,1));
+		triangulo.setToolTipText("Triangulo");
 		triangulo.addActionListener(new ActionListener() {
 
 			@Override
@@ -70,7 +82,10 @@ public class PainelBotoes extends JPanel {
 		figuras.add(triangulo);
 		
 		cor = new JButton ();
-		cor.setMargin(new Insets(11, 11, 11, 11));
+		cor2 = new JButton();
+		cor2.setMargin(new Insets(1,1,1,1));
+		cor2.setEnabled(false);
+		cor.setMargin(new Insets(7,7,7,7));
 		cor.setToolTipText("Selecione a Cor");
 		cor.setBackground(Color.BLACK);
 		cor.addActionListener(new ActionListener() {
@@ -85,9 +100,12 @@ public class PainelBotoes extends JPanel {
 			}
 			
 		});
-		cores.add(cor);
+		cor2.add(cor);
+		cores.add(cor2);
 		
-		desfazer = new JButton("DESFAZER");
+		desfazer = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\undo.png"));
+		desfazer.setMargin(new Insets(1,1,1,1));
+		desfazer.setToolTipText("Desfazer");
 		desfazer.addActionListener(new ActionListener() {
 
 			@Override
@@ -97,7 +115,9 @@ public class PainelBotoes extends JPanel {
 		});
 		acoes.add(desfazer);
 		
-		refazer = new JButton("REFAZER");
+		refazer = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\redo.png"));
+		refazer.setMargin(new Insets(1,1,1,1));
+		refazer.setToolTipText("Refazer");
 		refazer.addActionListener(new ActionListener() {
 
 			@Override
@@ -107,7 +127,9 @@ public class PainelBotoes extends JPanel {
 		});
 		acoes.add(refazer);
 		
-		limpar = new JButton("LIMPAR");
+		limpar = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\lixeira.png"));
+		limpar.setMargin(new Insets(1,1,1,1));
+		limpar.setToolTipText("Limpar");
 		limpar.addActionListener(new ActionListener() {
 
 			@Override
