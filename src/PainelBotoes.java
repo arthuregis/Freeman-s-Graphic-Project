@@ -10,6 +10,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 
 public class PainelBotoes extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private JButton cadeiaFreeman, desfazer, refazer, limpar;
 	private JButton quadrado,livre,triangulo, cor;
 	private JPanel figuras, cores, acoes;

@@ -1,8 +1,9 @@
 import java.awt.Color;
 import java.awt.Point;
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Figura {
+public class Figura implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Point ponto_inicial;
 	private int passo;
 	private int codigo[];
@@ -58,5 +59,4 @@ public class Figura {
 	public void setCor(Color cor) {
 		this.cor = cor;
 	}
-
 }

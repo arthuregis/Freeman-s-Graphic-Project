@@ -5,7 +5,6 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -13,17 +12,15 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class PainelDesenho extends JPanel 
 	implements MouseListener,MouseMotionListener,ActionListener,KeyListener{
-
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Figura> principal = new ArrayList<>();
 	private ArrayList<Figura> lixeira = new ArrayList<>();
 	private Color aux_cor = Color.BLACK;
@@ -37,6 +34,7 @@ public class PainelDesenho extends JPanel
 	private JTextField aux_texto = new JTextField(30);
 	private boolean mousemoved;
 	private boolean limpar = false;
+	private boolean saved = true;
 	
 	public PainelDesenho() {
 		setLayout(new BorderLayout());
@@ -153,6 +151,25 @@ public class PainelDesenho extends JPanel
 		
 	}
 	
+	public boolean isSaved() {
+		return saved;
+	}
+	
+	public void setSaved() {
+		saved = true;
+	}
+	
+	public ArrayList<Figura> getFiguras() {
+		return principal;
+	}
+	
+	public void setFiguras(ArrayList<Figura> figuras) {
+		saved = true;
+		principal = figuras;
+		lixeira.clear();
+		repaint();
+	}
+	
 	public void setCor(Color cor) {
 		aux_cor = cor;
 		aux_figura.setCor(cor);
@@ -173,6 +190,7 @@ public class PainelDesenho extends JPanel
 	}
 	
 	public void newFigura(){
+		saved = false;
 		removePainelAuxiliar();
 		if(aux_figura.getPonto()!=null)
 			lixeira.clear();
