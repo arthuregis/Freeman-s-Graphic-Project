@@ -391,7 +391,6 @@ public class PainelDesenho extends JPanel
 				}
 			}
 			aux_figura.addCodigo(codigos);
-			System.out.println(aux_figura.getCodigo().length);
 			repaint();
 		}
 		

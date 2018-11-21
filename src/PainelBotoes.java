@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,7 +14,7 @@ public class PainelBotoes extends JPanel {
 	private JButton quadrado,livre,triangulo, cor;
 	private JPanel figuras, cores, acoes;
 	private PainelDesenho painel_ativo;
-	
+		
 	public PainelBotoes(PainelDesenho painel) {
 		setLayout(new GridLayout(1,3));
 		painel_ativo = painel;
@@ -67,13 +68,19 @@ public class PainelBotoes extends JPanel {
 		});
 		figuras.add(triangulo);
 		
-		cor = new JButton ("Selecionar Cor");
+		cor = new JButton ();
+		cor.setMargin(new Insets(11, 11, 11, 11));
+		cor.setToolTipText("Selecione a Cor");
+		cor.setBackground(Color.BLACK);
 		cor.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Color cor = JColorChooser.showDialog(painel_ativo,"painel_ativo de Cores", Color.BLACK);
-				painel_ativo.setCor(cor);
+				Color color = JColorChooser.showDialog(painel_ativo,"painel_ativo de Cores", Color.BLACK);
+				if(color!=null) {
+					painel_ativo.setCor(color);
+					cor.setBackground(color);
+				}
 			}
 			
 		});
