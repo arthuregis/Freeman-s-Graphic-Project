@@ -32,7 +32,7 @@ public class PainelDesenho extends JPanel
 	private JPanel aux_painel = new JPanel();
 	private JLabel aux_label = new JLabel();
 	private JTextField aux_texto = new JTextField(30);
-	private boolean mousemoved;
+	private boolean mousemoved = false;
 	private boolean limpar = false;
 	private boolean saved = true;
 	
@@ -61,7 +61,7 @@ public class PainelDesenho extends JPanel
 		for(Figura figura:principal) 
 			doDesenho(figura,gg);
 		
-		if(aux_figura.getPasso()>0) 
+		if(aux_figura.getPonto()!=null) 
 			doDesenho(aux_figura,gg);
 		
 	}
@@ -127,26 +127,15 @@ public class PainelDesenho extends JPanel
 			coordenadas = new Point[1];
 			coordenadas[0] = figura.getPonto();
 		}
-				
-		if(figura.equals(aux_figura) ) {
-			if(tipo_desenho==Desenho.FREEMAN && mousemoved) {
-				if(aux_figura.getCodigo()!=null)
-					aux_ponto = coordenadas[aux_figura.getCodigo().length].getLocation();
-				else
-					aux_ponto = aux_figura.getPonto().getLocation();
-				
-				gg.drawLine(aux_ponto.x,
-						aux_ponto.y,
-						aux_ponto2.x,aux_ponto2.y);
-				mousemoved = false;
-				aux_ponto2.setLocation(aux_ponto);
-			}
-			else if(tipo_desenho==Desenho.LIVRE) {
-				if(aux_figura.getCodigo()!=null)
-					aux_ponto = coordenadas[aux_figura.getCodigo().length].getLocation();
-				else
-					aux_ponto = aux_figura.getPonto().getLocation();
-			}
+			
+		if(figura.equals(aux_figura))
+			aux_ponto =  coordenadas[coordenadas.length-1].getLocation();
+		
+		if(mousemoved){
+			gg.drawLine(aux_ponto.x,
+					aux_ponto.y,
+					aux_ponto2.x,aux_ponto2.y);
+			mousemoved = false;
 		}
 		
 	}
@@ -206,11 +195,16 @@ public class PainelDesenho extends JPanel
 		repaint();
 	}
 	
-	public void desfazer() {
+	public void resetarFigura() {
 		if(aux_figura.getPonto()!=null) {
 			aux_figura = new Figura(aux_cor);
 			lixeira.clear();
+			removePainelAuxiliar();
 		}
+	}
+	
+	public void desfazer() {
+		resetarFigura();
 		if(principal.size()>0) {
 				lixeira.add(principal.get(principal.size()-1));
 				principal.remove(principal.size()-1);
@@ -226,10 +220,7 @@ public class PainelDesenho extends JPanel
 	}
 	
 	public void refazer() {
-		if(aux_figura.getPonto()!=null) {
-			aux_figura = new Figura(aux_cor);
-			lixeira.clear();
-		}
+		resetarFigura();
 		if(lixeira.size()>0 && !limpar) {
 			principal.add(lixeira.get(lixeira.size()-1));
 			lixeira.remove(lixeira.size()-1);
@@ -239,7 +230,7 @@ public class PainelDesenho extends JPanel
 	}
 	
 	public void limpar() {
-		aux_figura = new Figura(aux_cor);
+		resetarFigura();
 		if(!limpar)
 			lixeira.clear();
 		for(int i = 0 ; i< principal.size() ; i++)
@@ -457,7 +448,7 @@ public class PainelDesenho extends JPanel
 			int p = aux_figura.getPasso();
 			int y = e.getY() - aux_ponto.y;
 			int x = e.getX() - aux_ponto.x ;
-			
+					
 			if(x<(-p/2)) {
 				if(y>p/2) {
 					aux_ponto2.setLocation(aux_ponto.x-p, aux_ponto.y+p);
@@ -600,16 +591,15 @@ public class PainelDesenho extends JPanel
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		requestFocus();
-		if(e.isMetaDown() && tipo_desenho!=Desenho.FREEMAN ) {
-			aux_figura.setCodigo(null);
-			newFigura();
-		}
-		else if (e.isMetaDown()) {
+		if(e.isMetaDown()) {
+			if(tipo_desenho!=Desenho.FREEMAN)
+				aux_figura.setCodigo(null);
 			newFigura();
 		}
 		else if(tipo_desenho == Desenho.FREEMAN) {
 			if(aux_figura.getPonto()==null) {
 				aux_figura.setPonto(e.getPoint());
+				aux_ponto2.setLocation(e.getPoint());
 				aux_label.setText("Passo");
 				addPainelAuxiliar();
 			}
