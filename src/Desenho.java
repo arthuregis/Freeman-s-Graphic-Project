@@ -5,4 +5,5 @@ public class Desenho {
 	public static final int QUADRADO = 2;
 	public static final int LIVRE = 3;
 	public static final int TRIANGULO = 4;
+	public static final int RETA = 4;
 }
