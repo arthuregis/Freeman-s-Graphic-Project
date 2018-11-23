@@ -132,6 +132,7 @@ public class PainelDesenho extends JPanel
 			aux_ponto =  coordenadas[coordenadas.length-1].getLocation();
 		
 		if(mousemoved){
+			gg.setColor(aux_cor);
 			gg.drawLine(aux_ponto.x,
 					aux_ponto.y,
 					aux_ponto2.x,aux_ponto2.y);
@@ -247,10 +248,11 @@ public class PainelDesenho extends JPanel
 			int x = e.getX() - aux_ponto.x ;
 
 			int codigos[];
-			int cont,resto;
+			int cont,resto,distrib;
 			int yd = Math.abs(y);
 			int xd = Math.abs(x);
 			int flag = 1;	
+			int flag2 = 0;
 			
 			if(xd>yd) {
 				codigos = new int[xd];
@@ -262,6 +264,10 @@ public class PainelDesenho extends JPanel
 					cont = xd+1;
 					resto=0;
 				}
+				if(resto>0)
+					distrib=yd/resto;
+				else
+					distrib=0;
 			}else {
 				codigos = new int[yd];
 				if(xd!=0) {
@@ -272,8 +278,12 @@ public class PainelDesenho extends JPanel
 					cont = yd+1;
 					resto=0;
 				}
+				if(resto>0)
+					distrib=xd/resto;
+				else
+					distrib=0;
 			}
-			
+						
 			if(x>=0) {
 				if(y<0) {
 					if(xd>yd) {
@@ -281,7 +291,9 @@ public class PainelDesenho extends JPanel
 							if(flag==cont) {
 								codigos[i] = 1;
 								flag = 1;
-								if(resto>0) {
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
 									codigos[++i]=0;
 									resto--;
 								}
@@ -295,7 +307,9 @@ public class PainelDesenho extends JPanel
 							if(flag==cont) {
 								codigos[i] = 1;
 								flag = 1;
-								if(resto>0) {
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
 									codigos[++i]=2;
 									resto--;
 								}
@@ -311,7 +325,9 @@ public class PainelDesenho extends JPanel
 							if(flag==cont) {
 								codigos[i] = 7;
 								flag = 1;
-								if(resto>0) {
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
 									codigos[++i]=0;
 									resto--;
 								}
@@ -325,7 +341,9 @@ public class PainelDesenho extends JPanel
 							if(flag==cont) {
 								codigos[i] = 7;
 								flag = 1;
-								if(resto>0) {
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
 									codigos[++i]=6;
 									resto--;
 								}
@@ -343,7 +361,9 @@ public class PainelDesenho extends JPanel
 							if(flag==cont) {
 								codigos[i] = 3;
 								flag = 1;
-								if(resto>0) {
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
 									codigos[++i]=4;
 									resto--;
 								}
@@ -357,7 +377,9 @@ public class PainelDesenho extends JPanel
 							if(flag==cont) {
 								codigos[i] = 3;
 								flag = 1;
-								if(resto>0) {
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
 									codigos[++i]=2;
 									resto--;
 								}
@@ -373,7 +395,9 @@ public class PainelDesenho extends JPanel
 							if(flag==cont) {
 								codigos[i] = 5;
 								flag = 1;
-								if(resto>0) {
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
 									codigos[++i]=4;
 									resto--;
 								}
@@ -387,7 +411,9 @@ public class PainelDesenho extends JPanel
 							if(flag==cont) {
 								codigos[i] = 5;
 								flag = 1;
-								if(resto>0) {
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
 									codigos[++i]=6;
 									resto--;
 								}
@@ -586,6 +612,192 @@ public class PainelDesenho extends JPanel
 			}
 			repaint();
 		}
+		else if(tipo_desenho == Desenho.RETA && aux_figura.getPonto()!=null) {
+			int y = e.getY() - aux_figura.getPonto().y;
+			int x = e.getX() - aux_figura.getPonto().x ;
+			
+			int codigos[];
+			int cont,resto,distrib;
+			int yd = Math.abs(y);
+			int xd = Math.abs(x);
+			int flag = 1;	
+			int flag2 = 0;
+			
+			if(xd>yd) {
+				codigos = new int[xd];
+				if(yd!=0) {
+					cont = xd/yd;
+					resto = xd%yd;
+				}
+				else {
+					cont = xd+1;
+					resto=0;
+				}
+				if(resto>0)
+					distrib=yd/resto;
+				else
+					distrib=0;
+			}else {
+				codigos = new int[yd];
+				if(xd!=0) {
+					cont = yd/xd;
+					resto = yd%xd;
+				}
+				else {
+					cont = yd+1;
+					resto=0;
+				}
+				if(resto>0)
+					distrib=xd/resto;
+				else
+					distrib=0;
+			}
+			
+			
+			if(x>=0) {
+				if(y<0) {
+					if(xd>yd) {
+						for(int i = 0; i<codigos.length; i++) {
+							if(flag==cont) {
+								codigos[i] = 1;
+								flag = 1;
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
+									codigos[++i]=0;
+									resto--;
+								}
+							}else {
+								codigos[i] = 0;
+								flag++;
+							}
+						}
+					}else {
+						for(int i = 0; i<codigos.length; i++) {
+							if(flag==cont) {
+								codigos[i] = 1;
+								flag = 1;
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
+									codigos[++i]=2;
+									resto--;
+								}
+							}else {
+								codigos[i] = 2;
+								flag++;
+							}
+						}
+					}
+				}else {
+					if(xd>yd) {
+						for(int i = 0; i<codigos.length; i++) {
+							if(flag==cont) {
+								codigos[i] = 7;
+								flag = 1;
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
+									codigos[++i]=0;
+									resto--;
+								}
+							}else {
+								codigos[i] = 0;
+								flag++;
+							}
+						}
+					}else {
+						for(int i = 0; i<codigos.length; i++) {
+							if(flag==cont) {
+								codigos[i] = 7;
+								flag = 1;
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
+									codigos[++i]=6;
+									resto--;
+								}
+							}else {
+								codigos[i] = 6;
+								flag++;
+							}
+						}
+					}
+				}
+			}else {
+				if(y<0) {
+					if(xd>yd) {
+						for(int i = 0; i<codigos.length; i++) {
+							if(flag==cont) {
+								codigos[i] = 3;
+								flag = 1;
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
+									codigos[++i]=4;
+									resto--;
+								}
+							}else {
+								codigos[i] = 4;
+								flag++;
+							}
+						}
+					}else {
+						for(int i = 0; i<codigos.length; i++) {
+							if(flag==cont) {
+								codigos[i] = 3;
+								flag = 1;
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
+									codigos[++i]=2;
+									resto--;
+								}
+							}else {
+								codigos[i] = 2;
+								flag++;
+							}
+						}
+					}
+				}else {
+					if(xd>yd) {
+						for(int i = 0; i<codigos.length; i++) {
+							if(flag==cont) {
+								codigos[i] = 5;
+								flag = 1;
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
+									codigos[++i]=4;
+									resto--;
+								}
+							}else {
+								codigos[i] = 4;
+								flag++;
+							}
+						}
+					}else {
+						for(int i = 0; i<codigos.length; i++) {
+							if(flag==cont) {
+								codigos[i] = 5;
+								flag = 1;
+								flag2++;
+								if(resto>0 && flag2==distrib) {
+									flag2=0;
+									codigos[++i]=6;
+									resto--;
+								}
+							}else {
+								codigos[i] = 6;
+								flag++;
+							}
+						}
+					}
+				}
+			}
+			aux_figura.setCodigo(codigos);
+			repaint();
+		}
 	}
 	
 	@Override
@@ -625,6 +837,17 @@ public class PainelDesenho extends JPanel
 			}
 			else 
 				newFigura();
+		}
+		else if(tipo_desenho == Desenho.RETA) {
+			if(aux_figura.getPonto()==null) {
+				aux_figura.setPonto(e.getPoint());
+				aux_figura.setPasso(1);
+				lixeira.clear();
+			}else {
+				newFigura();
+				aux_figura.setPonto(e.getPoint());
+				aux_figura.setPasso(1);
+			}
 		}
 	}
 	
