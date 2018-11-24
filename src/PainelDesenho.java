@@ -240,6 +240,44 @@ public class PainelDesenho extends JPanel
 		limpar = true;
 		repaint();
 	}
+	
+	private int[] doReta(int tamanho,int prop, int aux, int codigo1, int codigo2){
+		int codigos[] = new int[tamanho];
+		int flag = 0;
+		for(int i = 0; i <tamanho ;i++){
+			if((i+1)%aux == 0)
+				codigos[i]=codigo1;
+			else{
+				if(flag==0){
+					codigos[i]=codigo2;
+					flag=prop;
+				}else{
+					codigos[i]=codigo1;
+					flag--;
+				}
+			}
+		}
+		return codigos;
+	}
+	
+	private int[] doLivre(int tamanho,int cont, int resto, int diagonal, int reta) {
+		int codigos[] = new int[tamanho];
+		int flag = 1;
+		for(int i = 0; i<tamanho; i++) {
+			if(flag==cont) {
+				codigos[i] = diagonal;
+				flag = 1;
+				if(resto>0  ) {
+					codigos[++i]=reta;
+					resto--;
+				}
+			}else {
+				codigos[i] = reta;
+				flag++;
+			}
+		}
+		return codigos;
+	}
 		
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -248,14 +286,12 @@ public class PainelDesenho extends JPanel
 			int x = e.getX() - aux_ponto.x ;
 
 			int codigos[];
-			int cont,resto,distrib;
+			int cont,resto,tamanho;
 			int yd = Math.abs(y);
 			int xd = Math.abs(x);
-			int flag = 1;	
-			int flag2 = 0;
 			
 			if(xd>yd) {
-				codigos = new int[xd];
+				tamanho = xd;
 				if(yd!=0) {
 					cont = xd/yd;
 					resto = xd%yd;
@@ -264,12 +300,8 @@ public class PainelDesenho extends JPanel
 					cont = xd+1;
 					resto=0;
 				}
-				if(resto>0)
-					distrib=yd/resto;
-				else
-					distrib=0;
 			}else {
-				codigos = new int[yd];
+				tamanho = yd;
 				if(xd!=0) {
 					cont = yd/xd;
 					resto = yd%xd;
@@ -278,150 +310,34 @@ public class PainelDesenho extends JPanel
 					cont = yd+1;
 					resto=0;
 				}
-				if(resto>0)
-					distrib=xd/resto;
-				else
-					distrib=0;
 			}
 						
 			if(x>=0) {
 				if(y<0) {
 					if(xd>yd) {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 1;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=0;
-									resto--;
-								}
-							}else {
-								codigos[i] = 0;
-								flag++;
-							}
-						}
+						codigos = doLivre(tamanho,cont,resto,1,0);
 					}else {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 1;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=2;
-									resto--;
-								}
-							}else {
-								codigos[i] = 2;
-								flag++;
-							}
-						}
+						codigos = doLivre(tamanho,cont,resto,1,2);
 					}
 				}else {
 					if(xd>yd) {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 7;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=0;
-									resto--;
-								}
-							}else {
-								codigos[i] = 0;
-								flag++;
-							}
-						}
+						codigos = doLivre(tamanho,cont,resto,7,0);
 					}else {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 7;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=6;
-									resto--;
-								}
-							}else {
-								codigos[i] = 6;
-								flag++;
-							}
-						}
+						codigos = doLivre(tamanho,cont,resto,7,6);
 					}
 				}
 			}else {
 				if(y<0) {
 					if(xd>yd) {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 3;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=4;
-									resto--;
-								}
-							}else {
-								codigos[i] = 4;
-								flag++;
-							}
-						}
+						codigos = doLivre(tamanho,cont,resto,3,4);
 					}else {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 3;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=2;
-									resto--;
-								}
-							}else {
-								codigos[i] = 2;
-								flag++;
-							}
-						}
+						codigos = doLivre(tamanho,cont,resto,3,2);
 					}
 				}else {
 					if(xd>yd) {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 5;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=4;
-									resto--;
-								}
-							}else {
-								codigos[i] = 4;
-								flag++;
-							}
-						}
+						codigos = doLivre(tamanho,cont,resto,5,4);
 					}else {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 5;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=6;
-									resto--;
-								}
-							}else {
-								codigos[i] = 6;
-								flag++;
-							}
-						}
+						codigos = doLivre(tamanho,cont,resto,5,6);
 					}
 				}
 			}
@@ -615,182 +531,103 @@ public class PainelDesenho extends JPanel
 		else if(tipo_desenho == Desenho.RETA && aux_figura.getPonto()!=null) {
 			int y = e.getY() - aux_figura.getPonto().y;
 			int x = e.getX() - aux_figura.getPonto().x ;
-			
-			int codigos[];
-			int cont,resto,distrib;
-			int yd = Math.abs(y);
+
 			int xd = Math.abs(x);
-			int flag = 1;	
-			int flag2 = 0;
-			
-			if(xd>yd) {
-				codigos = new int[xd];
-				if(yd!=0) {
-					cont = xd/yd;
-					resto = xd%yd;
-				}
-				else {
-					cont = xd+1;
-					resto=0;
-				}
-				if(resto>0)
-					distrib=yd/resto;
-				else
-					distrib=0;
-			}else {
-				codigos = new int[yd];
-				if(xd!=0) {
-					cont = yd/xd;
-					resto = yd%xd;
-				}
-				else {
-					cont = yd+1;
-					resto=0;
-				}
-				if(resto>0)
-					distrib=xd/resto;
-				else
-					distrib=0;
+			int yd = Math.abs(y);
+
+			int diagonais, retas, prop, resto, aux, tamanho;
+			int codigos[];
+
+			if (xd>yd){
+				tamanho = xd;
+				diagonais = yd;
+				retas = xd - yd;
+			}else{
+				tamanho = yd;
+				diagonais = xd;
+				retas = yd-xd;
 			}
-			
-			
-			if(x>=0) {
-				if(y<0) {
-					if(xd>yd) {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 1;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=0;
-									resto--;
-								}
-							}else {
-								codigos[i] = 0;
-								flag++;
-							}
+
+			if(diagonais>retas){
+				if(retas == 0){
+					prop = diagonais+1;
+					resto=0;
+				}else{
+					prop = diagonais/retas;
+					resto=diagonais%retas;
+				}
+			}else{
+				if(diagonais==0){
+					prop = retas+1;
+					resto = 0;
+				}else{
+					prop = retas/diagonais;
+					resto=retas%diagonais;
+				}
+			}
+			 if(resto==0)
+				 aux = tamanho+1;
+			 else
+				aux = tamanho/(resto+1);
+
+
+			if(x>0){
+				if(y<0){
+					if(yd>xd){
+						if(retas>diagonais){
+							codigos = doReta(tamanho,prop,aux,2,1);
+						}else{
+							codigos = doReta(tamanho,prop,aux,1,2);
 						}
-					}else {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 1;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=2;
-									resto--;
-								}
-							}else {
-								codigos[i] = 2;
-								flag++;
-							}
+					}else{
+						if(retas>diagonais){
+							codigos = doReta(tamanho,prop,aux,0,1);
+						}else{
+							codigos = doReta(tamanho,prop,aux,1,0);
 						}
 					}
-				}else {
-					if(xd>yd) {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 7;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=0;
-									resto--;
-								}
-							}else {
-								codigos[i] = 0;
-								flag++;
-							}
+				}else{
+					if(xd>yd){
+						if(retas>diagonais){
+							codigos = doReta(tamanho,prop,aux,0,7);
+						}else{
+							codigos = doReta(tamanho,prop,aux,7,0);
 						}
-					}else {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 7;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=6;
-									resto--;
-								}
-							}else {
-								codigos[i] = 6;
-								flag++;
-							}
+					}else{
+						if(retas>diagonais){
+							codigos = doReta(tamanho,prop,aux,6,7);
+						}else{
+							codigos = doReta(tamanho,prop,aux,7,6);
 						}
 					}
 				}
-			}else {
-				if(y<0) {
-					if(xd>yd) {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 3;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=4;
-									resto--;
-								}
-							}else {
-								codigos[i] = 4;
-								flag++;
-							}
+			}else{
+				if(y>0){
+					if(yd>xd){
+						if(retas>diagonais){
+							codigos = doReta(tamanho,prop,aux,6,5);
+						}else{
+							codigos = doReta(tamanho,prop,aux,5,6);
 						}
-					}else {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 3;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=2;
-									resto--;
-								}
-							}else {
-								codigos[i] = 2;
-								flag++;
-							}
+					}else{
+						if(retas>diagonais){
+							codigos = doReta(tamanho,prop,aux,4,5);
+						}else{
+							codigos = doReta(tamanho,prop,aux,5,4);
 						}
 					}
-				}else {
-					if(xd>yd) {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 5;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=4;
-									resto--;
-								}
-							}else {
-								codigos[i] = 4;
-								flag++;
-							}
+				}else{
+					if(xd>yd){
+						if(retas>diagonais){
+							codigos = doReta(tamanho,prop,aux,4,3);
+						}else{
+							codigos = doReta(tamanho,prop,aux,3,4);
 						}
-					}else {
-						for(int i = 0; i<codigos.length; i++) {
-							if(flag==cont) {
-								codigos[i] = 5;
-								flag = 1;
-								flag2++;
-								if(resto>0 && flag2==distrib) {
-									flag2=0;
-									codigos[++i]=6;
-									resto--;
-								}
-							}else {
-								codigos[i] = 6;
-								flag++;
-							}
+					}else{
+						if(retas>diagonais){
+							codigos = doReta(tamanho,prop,aux,2,3);
+						}else{
+							codigos = doReta(tamanho,prop,aux,3,2);
 						}
 					}
 				}
