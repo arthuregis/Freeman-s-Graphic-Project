@@ -175,6 +175,13 @@ public class TelaPrincipal extends JFrame {
 						FileOutputStream file = new FileOutputStream (nomeDoArquivo);
 						ImageIO.write(pintando.exportar(),"png", file);
 						file.close();
+						FileOutputStream fos = new FileOutputStream(nomeDoArquivo.replace(".png", ".pnt"));
+						ObjectOutputStream oos = new ObjectOutputStream(fos);
+						oos.writeObject(pintando.getFiguras());
+						fos.close();
+						oos.close();
+						pintando.setSaved();
+						
 					} 
 					catch (FileNotFoundException exc) { exc.printStackTrace(); } 
 					catch (IOException exc) { exc.printStackTrace(); }
@@ -211,6 +218,7 @@ public class TelaPrincipal extends JFrame {
 					try {
 						FileInputStream file = new FileInputStream (nomeDoArquivo);
 						BufferedImage imagem = ImageIO.read(file);
+						pintando.setFiguras(new ArrayList<Figura>());
 						pintando.setImagemFundo(imagem);
 						file.close();
 					} 
