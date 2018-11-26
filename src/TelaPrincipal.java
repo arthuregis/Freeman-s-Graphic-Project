@@ -20,24 +20,20 @@ import javax.swing.filechooser.FileFilter;
 
 public class TelaPrincipal extends JFrame {
 	private static final long serialVersionUID = 1L;
-	private JMenuBar barra_menu;
-	private JMenu arquivo;
-	private JMenuItem novo,abrir,salvar;
+	private JMenu edicao,rot_horario, rot_anti, copiar, passo;
 	private PainelDesenho pintando;
-	private PainelBotoes botoes;
 	private String ultimoDiretorioAcessado = ".";
-	
 	
 	public TelaPrincipal() {
 		super("πntando");
 		
-		barra_menu = new JMenuBar();
+		JMenuBar barra_menu = new JMenuBar();
 		setJMenuBar(barra_menu);
 		
-		arquivo = new JMenu("Arquivo");
+		JMenu arquivo = new JMenu("Arquivo");
 		barra_menu.add(arquivo);
 		
-		novo = new JMenuItem("Novo");
+		JMenuItem novo = new JMenuItem("Novo");
 		novo.addActionListener(new ActionListener() {
 
 			@Override
@@ -58,7 +54,7 @@ public class TelaPrincipal extends JFrame {
 		});
 		arquivo.add(novo);
 		
-		abrir = new JMenuItem("Abrir");
+		JMenuItem abrir = new JMenuItem("Abrir");
 		abrir.addActionListener(new ActionListener() {
 
 			@SuppressWarnings("unchecked")
@@ -104,7 +100,7 @@ public class TelaPrincipal extends JFrame {
 		});
 		arquivo.add(abrir);
 		
-		salvar = new JMenuItem("Salvar");
+		JMenuItem salvar = new JMenuItem("Salvar");
 		salvar.addActionListener(new ActionListener() {
 
 			@Override
@@ -146,12 +142,91 @@ public class TelaPrincipal extends JFrame {
 		});
 		arquivo.add(salvar);
 		
-		pintando = new PainelDesenho();
+		edicao = new JMenu ("Edicao");
+		barra_menu.add(edicao);
+		
+		rot_horario = new JMenu("Rotacionar -90°");
+		edicao.add(rot_horario);
+		
+		rot_anti = new JMenu("Rotacionar +90°");
+		edicao.add(rot_anti);
+		
+		passo = new JMenu("Alterar Passo");
+		edicao.add(passo);
+		
+		copiar = new JMenu("Copiar");
+		edicao.add(copiar);
+
+		pintando = new PainelDesenho(this);
 		add(pintando);
 		
-		botoes = new PainelBotoes(pintando);
+		PainelBotoes botoes = new PainelBotoes(pintando);
 		add(botoes,BorderLayout.NORTH);
 		
 	}
+	
+	private void addMenuRotacaoH(Figura figura, int indice) {
+		JMenuItem item = new JMenuItem("Figura "+indice);
+		item.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		rot_horario.add(item);
+	}
+	
+	private void addMenuRotacaoAH(Figura figura, int indice) {
+		JMenuItem item = new JMenuItem("Figura "+indice);
+		item.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		rot_anti.add(item);
+	}
+	
+	private void addMenuPasso(Figura figura, int indice) {
+		JMenuItem item = new JMenuItem("Figura "+indice);
+		item.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		passo.add(item);
+	}
+	
+	private void addMenuCopiar(Figura figura, int indice) {
+		JMenuItem item = new JMenuItem("Figura "+indice);
+		item.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		copiar.add(item);
+	}
+	
+	public void addFiguraMenu(Figura figura, int indice) {
+		addMenuRotacaoH(figura,indice);
+		addMenuRotacaoAH(figura,indice);
+		addMenuPasso(figura,indice);
+		addMenuCopiar(figura,indice);
+	}
+	
+	public void removeFiguraMenu(int indice) {
+		rot_horario.remove(indice-1);
+		rot_anti.remove(indice-1);
+		passo.remove(indice-1);
+		copiar.remove(indice-1);
+	}
+	
+	public void removeAllFiguraMenu() {
+		rot_horario.removeAll();
+		rot_anti.removeAll();
+		passo.removeAll();
+		copiar.removeAll();
+	}
 }

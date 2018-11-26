@@ -35,8 +35,10 @@ public class PainelDesenho extends JPanel
 	private boolean mousemoved = false;
 	private boolean limpar = false;
 	private boolean saved = true;
+	private TelaPrincipal tela;
 	
-	public PainelDesenho() {
+	public PainelDesenho(TelaPrincipal tela) {
+		this.tela = tela;
 		setLayout(new BorderLayout());
 		setBackground(Color.WHITE);
 		addMouseListener(this);
@@ -179,13 +181,18 @@ public class PainelDesenho extends JPanel
 		repaint();
 	}
 	
+	public void salvarFigura(Figura figura) {
+		principal.add(figura);
+		tela.addFiguraMenu(figura, principal.size());
+	}
+	
 	public void newFigura(){
 		saved = false;
 		removePainelAuxiliar();
 		if(aux_figura.getPonto()!=null)
 			lixeira.clear();
 		if(aux_figura.getCodigo()!=null && aux_figura.getPonto()!=null && aux_figura.getPasso()!=0)
-			principal.add(aux_figura);
+			salvarFigura(aux_figura);
 		this.aux_figura = new Figura(aux_cor);				
 	}
 	
@@ -208,12 +215,13 @@ public class PainelDesenho extends JPanel
 		resetarFigura();
 		if(principal.size()>0) {
 				lixeira.add(principal.get(principal.size()-1));
+				tela.removeFiguraMenu(principal.size());
 				principal.remove(principal.size()-1);
 				limpar=false;
 			}
 		else if(lixeira.size()>0 && limpar) {
 				for(int i = 0; i<lixeira.size(); i++)
-					principal.add(lixeira.get(i));
+					salvarFigura(lixeira.get(i));
 				lixeira.clear();
 				limpar = false;
 		}
@@ -223,7 +231,7 @@ public class PainelDesenho extends JPanel
 	public void refazer() {
 		resetarFigura();
 		if(lixeira.size()>0 && !limpar) {
-			principal.add(lixeira.get(lixeira.size()-1));
+			salvarFigura(lixeira.get(lixeira.size()-1));
 			lixeira.remove(lixeira.size()-1);
 			limpar = false;
 		}
@@ -237,6 +245,7 @@ public class PainelDesenho extends JPanel
 		for(int i = 0 ; i< principal.size() ; i++)
 			lixeira.add(principal.get(i));
 		principal.clear();
+		tela.removeAllFiguraMenu();
 		limpar = true;
 		repaint();
 	}
@@ -661,7 +670,6 @@ public class PainelDesenho extends JPanel
 		else if(tipo_desenho == Desenho.QUADRADO) {
 			if(aux_figura.getPonto()==null) {
 				aux_figura.setPonto(e.getPoint());
-				lixeira.clear();
 				aux_label.setText("Aresta");
 				addPainelAuxiliar();
 			}
@@ -670,7 +678,6 @@ public class PainelDesenho extends JPanel
 		else if(tipo_desenho == Desenho.TRIANGULO) {
 			if(aux_figura.getPonto()==null) {
 				aux_figura.setPonto(e.getPoint());
-				lixeira.clear();
 			}
 			else 
 				newFigura();
@@ -679,7 +686,6 @@ public class PainelDesenho extends JPanel
 			if(aux_figura.getPonto()==null) {
 				aux_figura.setPonto(e.getPoint());
 				aux_figura.setPasso(1);
-				lixeira.clear();
 			}else {
 				newFigura();
 				aux_figura.setPonto(e.getPoint());
