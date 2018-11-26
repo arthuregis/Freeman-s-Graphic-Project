@@ -12,8 +12,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -36,6 +40,7 @@ public class PainelDesenho extends JPanel
 	private boolean limpar = false;
 	private boolean saved = true;
 	private TelaPrincipal tela;
+	private BufferedImage imagem_fundo;
 	
 	public PainelDesenho(TelaPrincipal tela) {
 		this.tela = tela;
@@ -50,7 +55,6 @@ public class PainelDesenho extends JPanel
 		aux_painel.add(aux_texto);
 		aux_texto.addActionListener(this);
 		
-		
 	}
 	
 	@Override
@@ -59,16 +63,21 @@ public class PainelDesenho extends JPanel
 		Graphics2D gg = (Graphics2D) g;
 		gg.setStroke(new BasicStroke(2f));
 		
+		if(imagem_fundo!=null)
+			gg.drawImage(imagem_fundo, null, 
+					((this.getWidth()/2)-(imagem_fundo.getWidth()/2)) ,
+					((this.getHeight()/2)-(imagem_fundo.getHeight()/2))
+					);
 		
 		for(Figura figura:principal) 
 			doDesenho(figura,gg);
-		
+				
 		if(aux_figura.getPonto()!=null) 
 			doDesenho(aux_figura,gg);
 		
 	}
 	
-	public void doDesenho(Figura figura, Graphics2D gg) {
+	private void doDesenho(Figura figura, Graphics2D gg) {
 		
 		gg.setColor(figura.getCor());
 		int passo = figura.getPasso();
@@ -143,6 +152,11 @@ public class PainelDesenho extends JPanel
 		
 	}
 	
+	public void setImagemFundo(BufferedImage imagem) {
+		imagem_fundo = imagem;
+		repaint();
+	}
+	
 	public boolean isSaved() {
 		return saved;
 	}
@@ -158,6 +172,11 @@ public class PainelDesenho extends JPanel
 	public void setFiguras(ArrayList<Figura> figuras) {
 		saved = true;
 		principal = figuras;
+		if (principal!=null) {
+			for(int i = 0; i<principal.size() ;i++) {
+				tela.addFiguraMenu(principal.get(i), i+1);
+			}
+		}
 		lixeira.clear();
 		repaint();
 	}
@@ -167,14 +186,14 @@ public class PainelDesenho extends JPanel
 		aux_figura.setCor(cor);
 	}
 	
-	public void removePainelAuxiliar() {
+	private void removePainelAuxiliar() {
 		remove(aux_painel);
 		aux_texto.setText("");
 		repaint();
 		validate();
 	}
 	
-	public void addPainelAuxiliar() {
+	private void addPainelAuxiliar() {
 		add(aux_painel,BorderLayout.SOUTH);
 		aux_texto.requestFocus();
 		validate();
@@ -185,12 +204,12 @@ public class PainelDesenho extends JPanel
 		aux_figura=figura;
 	}
 	
-	public void salvarFigura(Figura figura) {
+	private void salvarFigura(Figura figura) {
 		principal.add(figura);
 		tela.addFiguraMenu(figura, principal.size());
 	}
 	
-	public void newFigura(){
+	private void newFigura(){
 		saved = false;
 		removePainelAuxiliar();
 		if(aux_figura.getPonto()!=null)
@@ -207,12 +226,32 @@ public class PainelDesenho extends JPanel
 		repaint();
 	}
 	
-	public void resetarFigura() {
+	private void resetarFigura() {
 		if(aux_figura.getPonto()!=null) {
 			aux_figura = new Figura(aux_cor);
 			lixeira.clear();
 			removePainelAuxiliar();
 		}
+	}
+	
+	public BufferedImage exportar() {
+		BufferedImage imagem = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2d = imagem.createGraphics();
+		g2d.setColor(getBackground());
+		g2d.fillRect(0, 0, this.getWidth(),this.getHeight());
+		
+		if(imagem_fundo!=null)
+			g2d.drawImage(imagem_fundo, null, 
+					((this.getWidth()/2)-(imagem_fundo.getWidth()/2)) ,
+					((this.getHeight()/2)-(imagem_fundo.getHeight()/2))
+					);
+		
+		g2d.setStroke(new BasicStroke(2f));
+		for(Figura figura:principal) 
+			doDesenho(figura,g2d);
+		g2d.dispose();
+		
+		return imagem;
 	}
 	
 	public void desfazer() {

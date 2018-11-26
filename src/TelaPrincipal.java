@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -44,11 +46,17 @@ public class TelaPrincipal extends JFrame {
 						"Tem certeza que deseja continuar? A figura atual sera perdida.",
 						"Novo Desenho", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
 						null, opcoes, opcoes[0]);
-				if (i == JOptionPane.YES_OPTION) 
+				if (i == JOptionPane.YES_OPTION) {
 					pintando.setFiguras(new ArrayList<Figura>());
+					removeAllFiguraMenu();
+					pintando.setImagemFundo(null);
 				}
-				else
+				}
+				else {
 					pintando.setFiguras(new ArrayList<Figura>());
+					removeAllFiguraMenu();
+					pintando.setImagemFundo(null);
+				}
 			}
 			
 		});
@@ -72,10 +80,10 @@ public class TelaPrincipal extends JFrame {
 					JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
 					escolhedorDeArquivos.setFileFilter(new FileFilter() {
 						public boolean accept(File f) {
-							return f.getName().toLowerCase().endsWith(".pint") || f.isDirectory();
+							return f.getName().toLowerCase().endsWith(".pnt") || f.isDirectory();
 						}
 						public String getDescription() {
-							return "*.pint";
+							return "*.pnt";
 						}
 					});
 					int situacao = escolhedorDeArquivos.showOpenDialog(TelaPrincipal.this);
@@ -109,18 +117,18 @@ public class TelaPrincipal extends JFrame {
 				JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
 				escolhedorDeArquivos.setFileFilter(new FileFilter() {
 					public boolean accept(File f) {
-						return f.getName().toLowerCase().endsWith(".pint") || f.isDirectory();
+						return f.getName().toLowerCase().endsWith(".pnt") || f.isDirectory();
 					}
 					public String getDescription() {
-						return "*.pint";
+						return "*.pnt";
 					}
 				});
 				int situacao = escolhedorDeArquivos.showSaveDialog(TelaPrincipal.this);
 				if (situacao == JFileChooser.APPROVE_OPTION) {
 					ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
 					nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
-					if(! nomeDoArquivo.toLowerCase().endsWith(".pint"))
-						nomeDoArquivo += ".pint";
+					if(! nomeDoArquivo.toLowerCase().endsWith(".pnt"))
+						nomeDoArquivo += ".pnt";
 					try {
 						FileOutputStream fos = new FileOutputStream(nomeDoArquivo);
 						ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -138,9 +146,84 @@ public class TelaPrincipal extends JFrame {
 				}
 				
 			}
-			
 		});
 		arquivo.add(salvar);
+		arquivo.addSeparator();
+		
+		JMenuItem exportar = new JMenuItem("Exportar");
+		exportar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String nomeDoArquivo;
+				JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
+				escolhedorDeArquivos.setFileFilter(new FileFilter() {
+					public boolean accept(File f) {
+						return f.getName().toLowerCase().endsWith(".png") || f.isDirectory();
+					}
+					public String getDescription() {
+						return "*.png";
+					}
+				});
+				int situacao = escolhedorDeArquivos.showSaveDialog(TelaPrincipal.this);
+				if (situacao == JFileChooser.APPROVE_OPTION) {
+					ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
+					nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
+					if(! nomeDoArquivo.toLowerCase().endsWith(".png"))
+						nomeDoArquivo += ".png";
+					try {
+						FileOutputStream file = new FileOutputStream (nomeDoArquivo);
+						ImageIO.write(pintando.exportar(),"png", file);
+						file.close();
+					} 
+					catch (FileNotFoundException exc) { exc.printStackTrace(); } 
+					catch (IOException exc) { exc.printStackTrace(); }
+				}
+				if (situacao == JFileChooser.CANCEL_OPTION) {
+					JOptionPane.showMessageDialog(TelaPrincipal.this, "Arquivo nao salvo",
+							"Salvar", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+		arquivo.add(exportar);
+		
+		JMenuItem importar = new JMenuItem("Importar");
+		importar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String nomeDoArquivo;
+				JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
+				escolhedorDeArquivos.setFileFilter(new FileFilter() {
+					public boolean accept(File f) {
+						return f.getName().toLowerCase().endsWith(".png") || f.isDirectory();
+					}
+					public String getDescription() {
+						return "*.png";
+					}
+				});
+				int situacao = escolhedorDeArquivos.showSaveDialog(TelaPrincipal.this);
+				if (situacao == JFileChooser.APPROVE_OPTION) {
+					ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
+					nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
+					if(! nomeDoArquivo.toLowerCase().endsWith(".png"))
+						nomeDoArquivo += ".png";
+					try {
+						FileInputStream file = new FileInputStream (nomeDoArquivo);
+						BufferedImage imagem = ImageIO.read(file);
+						pintando.setImagemFundo(imagem);
+						file.close();
+					} 
+					catch (FileNotFoundException exc) { exc.printStackTrace(); } 
+					catch (IOException exc) { exc.printStackTrace(); }
+				}
+				if (situacao == JFileChooser.CANCEL_OPTION) {
+					JOptionPane.showMessageDialog(TelaPrincipal.this, "Arquivo nao salvo",
+							"Salvar", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+		arquivo.add(importar);
 		
 		edicao = new JMenu ("Edicao");
 		barra_menu.add(edicao);
@@ -222,11 +305,7 @@ public class TelaPrincipal extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Figura aux = new Figura(figura.getCor());
-				int codigos[] = new int[figura.getCodigo().length];
-				for(int i = 0 ; i<codigos.length; i++) {
-					codigos[i] = figura.getCodigo()[i];
-				}
-				aux.setCodigo(codigos);
+				aux.setCodigo(figura.getCodigo().clone());
 				aux.setPasso(figura.getPasso());
 				pintando.setTipoDesenho(Desenho.COPIAR);
 				pintando.setFiguraAuxiliar(aux);
