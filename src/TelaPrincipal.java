@@ -20,7 +20,7 @@ import javax.swing.filechooser.FileFilter;
 
 public class TelaPrincipal extends JFrame {
 	private static final long serialVersionUID = 1L;
-	private JMenu edicao,rot_horario, rot_anti, copiar, passo;
+	private JMenu edicao,rot_horario, rot_anti, copiar, passo, mover;
 	private PainelDesenho pintando;
 	private String ultimoDiretorioAcessado = ".";
 	
@@ -154,6 +154,9 @@ public class TelaPrincipal extends JFrame {
 		passo = new JMenu("Alterar Passo");
 		edicao.add(passo);
 		
+		mover = new JMenu("Mover");
+		edicao.add(mover);
+		
 		copiar = new JMenu("Copiar");
 		edicao.add(copiar);
 
@@ -171,6 +174,8 @@ public class TelaPrincipal extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				figura.setCodigo(rotacionarH(figura));
+				pintando.repaint();
 			}
 		});
 		rot_horario.add(item);
@@ -182,6 +187,8 @@ public class TelaPrincipal extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				figura.setCodigo(rotacionarAH(figura));
+				pintando.repaint();
 			}
 		});
 		rot_anti.add(item);
@@ -193,6 +200,16 @@ public class TelaPrincipal extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				try {
+					int passo = Integer.parseInt(JOptionPane.showInputDialog(pintando, 
+							"Digite o novo Passo:", "Passo", JOptionPane.QUESTION_MESSAGE));
+					if(passo<1)
+						throw new NumberFormatException();
+					figura.setPasso(passo);
+					pintando.repaint();					
+				}catch(NumberFormatException e1) {
+					JOptionPane.showMessageDialog(pintando, "Valor Invalido", "ERRO", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		passo.add(item);
@@ -204,9 +221,31 @@ public class TelaPrincipal extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Figura aux = new Figura(figura.getCor());
+				int codigos[] = new int[figura.getCodigo().length];
+				for(int i = 0 ; i<codigos.length; i++) {
+					codigos[i] = figura.getCodigo()[i];
+				}
+				aux.setCodigo(codigos);
+				aux.setPasso(figura.getPasso());
+				pintando.setTipoDesenho(Desenho.COPIAR);
+				pintando.setFiguraAuxiliar(aux);
 			}
 		});
 		copiar.add(item);
+	}
+	
+	private void addMenuMover(Figura figura, int indice) {
+		JMenuItem item = new JMenuItem("Figura "+indice);
+		item.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pintando.setTipoDesenho(Desenho.MOVER);
+				pintando.setFiguraAuxiliar(figura);
+			}
+		});
+		mover.add(item);
 	}
 	
 	public void addFiguraMenu(Figura figura, int indice) {
@@ -214,6 +253,7 @@ public class TelaPrincipal extends JFrame {
 		addMenuRotacaoAH(figura,indice);
 		addMenuPasso(figura,indice);
 		addMenuCopiar(figura,indice);
+		addMenuMover(figura,indice);
 	}
 	
 	public void removeFiguraMenu(int indice) {
@@ -221,6 +261,7 @@ public class TelaPrincipal extends JFrame {
 		rot_anti.remove(indice-1);
 		passo.remove(indice-1);
 		copiar.remove(indice-1);
+		mover.remove(indice-1);
 	}
 	
 	public void removeAllFiguraMenu() {
@@ -228,5 +269,77 @@ public class TelaPrincipal extends JFrame {
 		rot_anti.removeAll();
 		passo.removeAll();
 		copiar.removeAll();
+		mover.removeAll();
 	}
+	
+	private int[] rotacionarH(Figura figura) {
+		int codigos[] = figura.getCodigo();
+		
+		for(int i = 0; i<codigos.length; i++) {
+			switch(codigos[i]) {
+			case 0:
+				codigos[i] = 6;
+				break;
+			case 1:
+				codigos[i] = 7;
+				break;
+			case 2:
+				codigos[i] = 0;
+				break;
+			case 3:
+				codigos[i] = 1;
+				break;
+			case 4:
+				codigos[i] = 2;
+				break;
+			case 5:
+				codigos[i] = 3;
+				break;
+			case 6:
+				codigos[i] = 4;
+				break;
+			case 7:
+				codigos[i] = 5;
+				break;
+			}
+		}
+		
+		return codigos;
+	}
+	
+	private int[] rotacionarAH(Figura figura) {
+		int codigos[] = figura.getCodigo();
+		
+		for(int i = 0; i<codigos.length; i++) {
+			switch(codigos[i]) {
+			case 0:
+				codigos[i] = 2;
+				break;
+			case 1:
+				codigos[i] = 3;
+				break;
+			case 2:
+				codigos[i] = 4;
+				break;
+			case 3:
+				codigos[i] = 5;
+				break;
+			case 4:
+				codigos[i] = 6;
+				break;
+			case 5:
+				codigos[i] = 7;
+				break;
+			case 6:
+				codigos[i] = 0;
+				break;
+			case 7:
+				codigos[i] = 1;
+				break;
+			}
+		}
+		
+		return codigos;
+	}
+	
 }

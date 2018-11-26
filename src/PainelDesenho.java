@@ -181,6 +181,10 @@ public class PainelDesenho extends JPanel
 		repaint();
 	}
 	
+	public void setFiguraAuxiliar(Figura figura) {
+		aux_figura=figura;
+	}
+	
 	public void salvarFigura(Figura figura) {
 		principal.add(figura);
 		tela.addFiguraMenu(figura, principal.size());
@@ -644,6 +648,10 @@ public class PainelDesenho extends JPanel
 			aux_figura.setCodigo(codigos);
 			repaint();
 		}
+		else if (tipo_desenho == Desenho.COPIAR || tipo_desenho == Desenho.MOVER) {
+			aux_figura.setPonto(e.getPoint());
+			repaint();
+		}
 	}
 	
 	@Override
@@ -691,6 +699,14 @@ public class PainelDesenho extends JPanel
 				aux_figura.setPonto(e.getPoint());
 				aux_figura.setPasso(1);
 			}
+		}
+		else if(tipo_desenho == Desenho.COPIAR) {
+			newFigura();
+			tipo_desenho = Desenho.DEFAULT;
+		}
+		else if(tipo_desenho == Desenho.MOVER) {
+			tipo_desenho = Desenho.DEFAULT;
+			aux_figura = new Figura(aux_cor);
 		}
 	}
 	
