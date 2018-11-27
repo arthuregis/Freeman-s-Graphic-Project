@@ -51,6 +51,20 @@ public class Figura implements Serializable{
 			codigo = finalcods;
 		}
 	}
+	
+public void addCodigo(int cod) {
+		int codigos[] = {cod};
+		if(codigo == null)
+			codigo = codigos;
+		else {
+			int finalcods[] = new int[codigo.length+codigos.length];
+			for(int i = 0 ; i<codigo.length; i++)
+				finalcods[i] = codigo[i];
+			for(int i = 0; i<codigos.length; i++)
+				finalcods[codigo.length+i] = codigos[i];
+			codigo = finalcods;
+		}
+	}
 
 	public Color getCor() {
 		return cor;

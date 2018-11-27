@@ -181,7 +181,6 @@ public class TelaPrincipal extends JFrame {
 						fos.close();
 						oos.close();
 						pintando.setSaved();
-						
 					} 
 					catch (FileNotFoundException exc) { exc.printStackTrace(); } 
 					catch (IOException exc) { exc.printStackTrace(); }
@@ -219,6 +218,7 @@ public class TelaPrincipal extends JFrame {
 						FileInputStream file = new FileInputStream (nomeDoArquivo);
 						BufferedImage imagem = ImageIO.read(file);
 						pintando.setFiguras(new ArrayList<Figura>());
+						removeAllFiguraMenu();
 						pintando.setImagemFundo(imagem);
 						file.close();
 					} 
@@ -265,7 +265,7 @@ public class TelaPrincipal extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				figura.setCodigo(rotacionarH(figura));
+				rotacionarH(figura);
 				pintando.repaint();
 			}
 		});
@@ -278,7 +278,7 @@ public class TelaPrincipal extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				figura.setCodigo(rotacionarAH(figura));
+				rotacionarAH(figura);
 				pintando.repaint();
 			}
 		});
@@ -359,7 +359,7 @@ public class TelaPrincipal extends JFrame {
 		mover.removeAll();
 	}
 	
-	private int[] rotacionarH(Figura figura) {
+	private void rotacionarH(Figura figura) {
 		int codigos[] = figura.getCodigo();
 		
 		for(int i = 0; i<codigos.length; i++) {
@@ -389,12 +389,10 @@ public class TelaPrincipal extends JFrame {
 				codigos[i] = 5;
 				break;
 			}
-		}
-		
-		return codigos;
+		};
 	}
 	
-	private int[] rotacionarAH(Figura figura) {
+	private void rotacionarAH(Figura figura) {
 		int codigos[] = figura.getCodigo();
 		
 		for(int i = 0; i<codigos.length; i++) {
@@ -425,8 +423,6 @@ public class TelaPrincipal extends JFrame {
 				break;
 			}
 		}
-		
-		return codigos;
 	}
 	
 }

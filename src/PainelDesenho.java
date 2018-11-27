@@ -60,11 +60,16 @@ public class PainelDesenho extends JPanel
 		Graphics2D gg = (Graphics2D) g;
 		gg.setStroke(new BasicStroke(2f));
 		
-		if(imagem_fundo!=null)
+		if(imagem_fundo!=null) {
 			gg.drawImage(imagem_fundo, null, 
 					((this.getWidth()/2)-(imagem_fundo.getWidth()/2)) ,
 					((this.getHeight()/2)-(imagem_fundo.getHeight()/2))
 					);
+			ArrayList<Point> borda = pegarBorda();
+			gg.setColor(Color.RED);
+			for(Point ponto:borda)
+				gg.fillOval(ponto.x, ponto.y, 5, 5);
+		}
 		
 		for(Figura figura:principal) 
 			doDesenho(figura,gg);
@@ -147,6 +152,70 @@ public class PainelDesenho extends JPanel
 			mousemoved = false;
 		}
 		
+	}
+	
+	
+	public ArrayList<Point> pegarBorda() {
+		ArrayList<Point> coordenadas = new ArrayList<>();
+		ArrayList<Point> borda = new ArrayList<>();
+		BufferedImage img = exportar();
+		
+		for(int i = 0 ; i < img.getHeight(); i++) {
+			for(int j = 0; j < img.getWidth(); j++) {
+				if(img.getRGB(j,i)!=-1) {
+				coordenadas.add(new Point(j,i));
+				}
+			}
+		}
+		
+		
+		for(int i = 0 ; i <coordenadas.size(); i++) {
+			if(coordenadas.get(i).y==coordenadas.get(0).y)
+				borda.add(coordenadas.get(i));
+			else if( ! coordenadas.get(i-1).equals(
+					new Point(coordenadas.get(i).x-1,
+							coordenadas.get(i).y))) {
+				borda.add(coordenadas.get(i));
+			}
+			else if( (i+1)<coordenadas.size() &&
+					! coordenadas.get(i+1).equals(
+							new Point(coordenadas.get(i).x+1,
+									coordenadas.get(i).y))) {
+				borda.add(coordenadas.get(i));
+			}
+			else if(i+1 == coordenadas.size())
+				borda.add(coordenadas.get(i));
+		}
+		
+		coordenadas.clear();
+		
+		for(int i = 0 ; i < img.getWidth(); i++) {
+			for(int j = 0; j < img.getHeight(); j++) {
+				if(img.getRGB(i,j)!=-1) {
+				coordenadas.add(new Point(i,j));
+				}
+			}
+		}
+		
+		for(int i = 0 ; i <coordenadas.size(); i++) {
+			if(coordenadas.get(i).x==coordenadas.get(0).x)
+				borda.add(coordenadas.get(i));
+			else if( ! coordenadas.get(i-1).equals(
+					new Point(coordenadas.get(i).x,
+							coordenadas.get(i).y-1))) {
+				borda.add(coordenadas.get(i));
+			}
+			else if( (i+1)<coordenadas.size() &&
+					! coordenadas.get(i+1).equals(
+							new Point(coordenadas.get(i).x,
+									coordenadas.get(i).y+1))) {
+				borda.add(coordenadas.get(i));
+			}
+			else if(i+1 == coordenadas.size())
+				borda.add(coordenadas.get(i));
+		}
+		
+		return borda;
 	}
 	
 	public void setImagemFundo(BufferedImage imagem) {
@@ -706,8 +775,7 @@ public class PainelDesenho extends JPanel
 				addPainelAuxiliar();
 			}
 			else if(aux_figura.getPasso()>0) {
-				int codigo[] = {aux_cod};
-				aux_figura.addCodigo(codigo);
+				aux_figura.addCodigo(aux_cod);
 				repaint();
 			}	
 		}
@@ -842,9 +910,8 @@ public class PainelDesenho extends JPanel
 			try {
 				int aux = Integer.parseInt(""+e.getKeyChar());
 				if(aux<0 || aux>7)
-					throw new NumberFormatException();
-				int codigo[] = {aux};
-				aux_figura.addCodigo(codigo);
+					throw new NumberFormatException();;
+				aux_figura.addCodigo(aux);
 				mousemoved = false;
 				repaint();
 			}catch(NumberFormatException e1) {}
