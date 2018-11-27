@@ -38,6 +38,7 @@ public class PainelDesenho extends JPanel
 	private boolean saved = true;
 	private TelaPrincipal tela;
 	private BufferedImage imagem_fundo;
+	private ArrayList<Point> borda = new ArrayList<>();
 	
 	public PainelDesenho(TelaPrincipal tela) {
 		this.tela = tela;
@@ -65,10 +66,11 @@ public class PainelDesenho extends JPanel
 					((this.getWidth()/2)-(imagem_fundo.getWidth()/2)) ,
 					((this.getHeight()/2)-(imagem_fundo.getHeight()/2))
 					);
-			ArrayList<Point> borda = pegarBorda();
-			gg.setColor(Color.RED);
+		}
+		if(borda.size()>0) {
+			gg.setColor(aux_cor);
 			for(Point ponto:borda)
-				gg.fillOval(ponto.x, ponto.y, 5, 5);
+				gg.fillOval(ponto.x-2, ponto.y-2, 4, 4);
 		}
 		
 		for(Figura figura:principal) 
@@ -154,8 +156,12 @@ public class PainelDesenho extends JPanel
 		
 	}
 	
+	public void removerBorda() {
+		this.borda.clear();
+		repaint();
+	}
 	
-	public ArrayList<Point> pegarBorda() {
+	public void addBorda() {
 		ArrayList<Point> coordenadas = new ArrayList<>();
 		ArrayList<Point> borda = new ArrayList<>();
 		BufferedImage img = exportar();
@@ -215,7 +221,8 @@ public class PainelDesenho extends JPanel
 				borda.add(coordenadas.get(i));
 		}
 		
-		return borda;
+		this.borda = borda;
+		repaint();
 	}
 	
 	public void setImagemFundo(BufferedImage imagem) {
@@ -250,6 +257,7 @@ public class PainelDesenho extends JPanel
 	public void setCor(Color cor) {
 		aux_cor = cor;
 		aux_figura.setCor(cor);
+		repaint();
 	}
 	
 	private void removePainelAuxiliar() {

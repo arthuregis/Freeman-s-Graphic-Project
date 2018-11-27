@@ -20,11 +20,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
-public class TelaPrincipal extends JFrame {
+public class TelaPrincipal extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JMenu edicao,rot_horario, rot_anti, copiar, passo, mover;
 	private PainelDesenho pintando;
-	private String ultimoDiretorioAcessado = ".";
+	private String ultimoDiretorioAcessado = "C:\\Users\\arthu\\Downloads";
+	private JMenuItem novo,abrir,salvar,exportar,importar;
+	private JMenuItem addBorda, removerBorda, removerFundo;
 	
 	public TelaPrincipal() {
 		super("πntando");
@@ -35,202 +37,25 @@ public class TelaPrincipal extends JFrame {
 		JMenu arquivo = new JMenu("Arquivo");
 		barra_menu.add(arquivo);
 		
-		JMenuItem novo = new JMenuItem("Novo");
-		novo.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(!pintando.isSaved()) {
-				String[] opcoes = {"Sim","Nao"};
-				int i = JOptionPane.showOptionDialog(TelaPrincipal.this,
-						"Tem certeza que deseja continuar? A figura atual sera perdida.",
-						"Novo Desenho", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-						null, opcoes, opcoes[0]);
-				if (i == JOptionPane.YES_OPTION) {
-					pintando.setFiguras(new ArrayList<Figura>());
-					removeAllFiguraMenu();
-					pintando.setImagemFundo(null);
-				}
-				}
-				else {
-					pintando.setFiguras(new ArrayList<Figura>());
-					removeAllFiguraMenu();
-					pintando.setImagemFundo(null);
-				}
-			}
-			
-		});
+		novo = new JMenuItem("Novo");
+		novo.addActionListener(this);
 		arquivo.add(novo);
 		
-		JMenuItem abrir = new JMenuItem("Abrir");
-		abrir.addActionListener(new ActionListener() {
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int i=-1;
-				if(!pintando.isSaved()) {
-					String[] opcoes = {"Sim","Nao"};
-					i = JOptionPane.showOptionDialog(TelaPrincipal.this,
-							"Tem certeza que deseja continuar? A figura atual sera perdida.",
-							"Abrir Desenho", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-							null, opcoes, opcoes[0]);
-				}
-				if (pintando.isSaved() || i == JOptionPane.YES_OPTION) {
-					JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
-					escolhedorDeArquivos.setFileFilter(new FileFilter() {
-						public boolean accept(File f) {
-							return f.getName().toLowerCase().endsWith(".pnt") || f.isDirectory();
-						}
-						public String getDescription() {
-							return "*.pnt";
-						}
-					});
-					int situacao = escolhedorDeArquivos.showOpenDialog(TelaPrincipal.this);
-					if (situacao == JFileChooser.APPROVE_OPTION) {
-						ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
-						String nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
-						try {
-							FileInputStream fis = new FileInputStream(nomeDoArquivo);
-							ObjectInputStream ois = new ObjectInputStream(fis);
-							Object obj = ois.readObject();
-							fis.close();
-							ois.close();
-							pintando.setFiguras((ArrayList<Figura>) obj);
-						} 
-						catch (FileNotFoundException exc) { exc.printStackTrace(); } 
-						catch (IOException exc) { exc.printStackTrace(); }
-						catch (ClassNotFoundException exc) { exc.printStackTrace(); }
-					}
-				}
-			}
-			
-		});
+		abrir = new JMenuItem("Abrir");
+		abrir.addActionListener(this);
 		arquivo.add(abrir);
 		
 		JMenuItem salvar = new JMenuItem("Salvar");
-		salvar.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String nomeDoArquivo;
-				JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
-				escolhedorDeArquivos.setFileFilter(new FileFilter() {
-					public boolean accept(File f) {
-						return f.getName().toLowerCase().endsWith(".pnt") || f.isDirectory();
-					}
-					public String getDescription() {
-						return "*.pnt";
-					}
-				});
-				int situacao = escolhedorDeArquivos.showSaveDialog(TelaPrincipal.this);
-				if (situacao == JFileChooser.APPROVE_OPTION) {
-					ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
-					nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
-					if(! nomeDoArquivo.toLowerCase().endsWith(".pnt"))
-						nomeDoArquivo += ".pnt";
-					try {
-						FileOutputStream fos = new FileOutputStream(nomeDoArquivo);
-						ObjectOutputStream oos = new ObjectOutputStream(fos);
-						oos.writeObject(pintando.getFiguras());
-						fos.close();
-						oos.close();
-						pintando.setSaved();
-					} 
-					catch (FileNotFoundException exc) { exc.printStackTrace(); } 
-					catch (IOException exc) { exc.printStackTrace(); }
-				}
-				if (situacao == JFileChooser.CANCEL_OPTION) {
-					JOptionPane.showMessageDialog(TelaPrincipal.this, "Arquivo nao salvo",
-							"Salvar", JOptionPane.INFORMATION_MESSAGE);
-				}
-				
-			}
-		});
+		salvar.addActionListener(this);
 		arquivo.add(salvar);
 		arquivo.addSeparator();
 		
-		JMenuItem exportar = new JMenuItem("Exportar");
-		exportar.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String nomeDoArquivo;
-				JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
-				escolhedorDeArquivos.setFileFilter(new FileFilter() {
-					public boolean accept(File f) {
-						return f.getName().toLowerCase().endsWith(".png") || f.isDirectory();
-					}
-					public String getDescription() {
-						return "*.png";
-					}
-				});
-				int situacao = escolhedorDeArquivos.showSaveDialog(TelaPrincipal.this);
-				if (situacao == JFileChooser.APPROVE_OPTION) {
-					ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
-					nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
-					if(! nomeDoArquivo.toLowerCase().endsWith(".png"))
-						nomeDoArquivo += ".png";
-					try {
-						FileOutputStream file = new FileOutputStream (nomeDoArquivo);
-						ImageIO.write(pintando.exportar(),"png", file);
-						file.close();
-						FileOutputStream fos = new FileOutputStream(nomeDoArquivo.replace(".png", ".pnt"));
-						ObjectOutputStream oos = new ObjectOutputStream(fos);
-						oos.writeObject(pintando.getFiguras());
-						fos.close();
-						oos.close();
-						pintando.setSaved();
-					} 
-					catch (FileNotFoundException exc) { exc.printStackTrace(); } 
-					catch (IOException exc) { exc.printStackTrace(); }
-				}
-				if (situacao == JFileChooser.CANCEL_OPTION) {
-					JOptionPane.showMessageDialog(TelaPrincipal.this, "Arquivo nao salvo",
-							"Salvar", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
+		exportar = new JMenuItem("Exportar");
+		exportar.addActionListener(this);
 		arquivo.add(exportar);
 		
-		JMenuItem importar = new JMenuItem("Importar");
-		importar.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String nomeDoArquivo;
-				JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
-				escolhedorDeArquivos.setFileFilter(new FileFilter() {
-					public boolean accept(File f) {
-						return f.getName().toLowerCase().endsWith(".png") || f.isDirectory();
-					}
-					public String getDescription() {
-						return "*.png";
-					}
-				});
-				int situacao = escolhedorDeArquivos.showSaveDialog(TelaPrincipal.this);
-				if (situacao == JFileChooser.APPROVE_OPTION) {
-					ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
-					nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
-					if(! nomeDoArquivo.toLowerCase().endsWith(".png"))
-						nomeDoArquivo += ".png";
-					try {
-						FileInputStream file = new FileInputStream (nomeDoArquivo);
-						BufferedImage imagem = ImageIO.read(file);
-						pintando.setFiguras(new ArrayList<Figura>());
-						removeAllFiguraMenu();
-						pintando.setImagemFundo(imagem);
-						file.close();
-					} 
-					catch (FileNotFoundException exc) { exc.printStackTrace(); } 
-					catch (IOException exc) { exc.printStackTrace(); }
-				}
-				if (situacao == JFileChooser.CANCEL_OPTION) {
-					JOptionPane.showMessageDialog(TelaPrincipal.this, "Arquivo nao salvo",
-							"Salvar", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
+		importar = new JMenuItem("Importar");
+		importar.addActionListener(this);
 		arquivo.add(importar);
 		
 		edicao = new JMenu ("Edicao");
@@ -250,7 +75,24 @@ public class TelaPrincipal extends JFrame {
 		
 		copiar = new JMenu("Copiar");
 		edicao.add(copiar);
-
+		
+		edicao.addSeparator();
+		
+		JMenu borda = new JMenu("Borda");
+		addBorda = new JMenuItem("Desenhar");
+		addBorda.addActionListener(this);
+		borda.add(addBorda);
+		removerBorda = new JMenuItem("Remover");
+		removerBorda.addActionListener(this);
+		borda.add(removerBorda);
+		edicao.add(borda);
+		
+		JMenu fundo = new JMenu("Imagem Importada");
+		removerFundo = new JMenuItem("Remover");
+		removerFundo.addActionListener(this);
+		fundo.add(removerFundo);
+		edicao.add(fundo);
+		
 		pintando = new PainelDesenho(this);
 		add(pintando);
 		
@@ -423,6 +265,178 @@ public class TelaPrincipal extends JFrame {
 				break;
 			}
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == novo) {
+			if(!pintando.isSaved()) {
+				String[] opcoes = {"Sim","Nao"};
+				int i = JOptionPane.showOptionDialog(TelaPrincipal.this,
+						"Tem certeza que deseja continuar? A figura atual sera perdida.",
+						"Novo Desenho", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+						null, opcoes, opcoes[0]);
+				if (i == JOptionPane.YES_OPTION) {
+					pintando.setFiguras(new ArrayList<Figura>());
+					removeAllFiguraMenu();
+					pintando.setImagemFundo(null);
+				}
+				}
+				else {
+					pintando.setFiguras(new ArrayList<Figura>());
+					removeAllFiguraMenu();
+					pintando.setImagemFundo(null);
+				}
+		}
+		else if(e.getSource() == abrir) {
+			int i=-1;
+			if(!pintando.isSaved()) {
+				String[] opcoes = {"Sim","Nao"};
+				i = JOptionPane.showOptionDialog(TelaPrincipal.this,
+						"Tem certeza que deseja continuar? A figura atual sera perdida.",
+						"Abrir Desenho", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+						null, opcoes, opcoes[0]);
+			}
+			if (pintando.isSaved() || i == JOptionPane.YES_OPTION) {
+				JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
+				escolhedorDeArquivos.setFileFilter(new FileFilter() {
+					public boolean accept(File f) {
+						return f.getName().toLowerCase().endsWith(".pnt") || f.isDirectory();
+					}
+					public String getDescription() {
+						return "*.pnt";
+					}
+				});
+				int situacao = escolhedorDeArquivos.showOpenDialog(TelaPrincipal.this);
+				if (situacao == JFileChooser.APPROVE_OPTION) {
+					ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
+					String nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
+					try {
+						FileInputStream fis = new FileInputStream(nomeDoArquivo);
+						ObjectInputStream ois = new ObjectInputStream(fis);
+						Object obj = ois.readObject();
+						fis.close();
+						ois.close();
+						pintando.setFiguras((ArrayList<Figura>) obj);
+					} 
+					catch (FileNotFoundException exc) { exc.printStackTrace(); } 
+					catch (IOException exc) { exc.printStackTrace(); }
+					catch (ClassNotFoundException exc) { exc.printStackTrace(); }
+				}
+			}
+		}
+		else if(e.getSource() == salvar) {
+			String nomeDoArquivo;
+			JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
+			escolhedorDeArquivos.setFileFilter(new FileFilter() {
+				public boolean accept(File f) {
+					return f.getName().toLowerCase().endsWith(".pnt") || f.isDirectory();
+				}
+				public String getDescription() {
+					return "*.pnt";
+				}
+			});
+			int situacao = escolhedorDeArquivos.showSaveDialog(TelaPrincipal.this);
+			if (situacao == JFileChooser.APPROVE_OPTION) {
+				ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
+				nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
+				if(! nomeDoArquivo.toLowerCase().endsWith(".pnt"))
+					nomeDoArquivo += ".pnt";
+				try {
+					FileOutputStream fos = new FileOutputStream(nomeDoArquivo);
+					ObjectOutputStream oos = new ObjectOutputStream(fos);
+					oos.writeObject(pintando.getFiguras());
+					fos.close();
+					oos.close();
+					pintando.setSaved();
+				} 
+				catch (FileNotFoundException exc) { exc.printStackTrace(); } 
+				catch (IOException exc) { exc.printStackTrace(); }
+			}
+			if (situacao == JFileChooser.CANCEL_OPTION) {
+				JOptionPane.showMessageDialog(TelaPrincipal.this, "Arquivo nao salvo",
+						"Salvar", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}else if(e.getSource() == exportar) {
+			String nomeDoArquivo;
+			JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
+			escolhedorDeArquivos.setFileFilter(new FileFilter() {
+				public boolean accept(File f) {
+					return f.getName().toLowerCase().endsWith(".png") || f.isDirectory();
+				}
+				public String getDescription() {
+					return "*.png";
+				}
+			});
+			int situacao = escolhedorDeArquivos.showSaveDialog(TelaPrincipal.this);
+			if (situacao == JFileChooser.APPROVE_OPTION) {
+				ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
+				nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
+				if(! nomeDoArquivo.toLowerCase().endsWith(".png"))
+					nomeDoArquivo += ".png";
+				try {
+					FileOutputStream file = new FileOutputStream (nomeDoArquivo);
+					ImageIO.write(pintando.exportar(),"png", file);
+					file.close();
+					FileOutputStream fos = new FileOutputStream(nomeDoArquivo.replace(".png", ".pnt"));
+					ObjectOutputStream oos = new ObjectOutputStream(fos);
+					oos.writeObject(pintando.getFiguras());
+					fos.close();
+					oos.close();
+					pintando.setSaved();
+				} 
+				catch (FileNotFoundException exc) { exc.printStackTrace(); } 
+				catch (IOException exc) { exc.printStackTrace(); }
+			}
+			if (situacao == JFileChooser.CANCEL_OPTION) {
+				JOptionPane.showMessageDialog(TelaPrincipal.this, "Arquivo nao salvo",
+						"Salvar", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+		else if(e.getSource() == importar) {
+			String nomeDoArquivo;
+			JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
+			escolhedorDeArquivos.setFileFilter(new FileFilter() {
+				public boolean accept(File f) {
+					return f.getName().toLowerCase().endsWith(".png") || f.isDirectory();
+				}
+				public String getDescription() {
+					return "*.png";
+				}
+			});
+			int situacao = escolhedorDeArquivos.showSaveDialog(TelaPrincipal.this);
+			if (situacao == JFileChooser.APPROVE_OPTION) {
+				ultimoDiretorioAcessado = escolhedorDeArquivos.getCurrentDirectory().toString();
+				nomeDoArquivo = escolhedorDeArquivos.getSelectedFile().getAbsolutePath();
+				if(! nomeDoArquivo.toLowerCase().endsWith(".png"))
+					nomeDoArquivo += ".png";
+				try {
+					FileInputStream file = new FileInputStream (nomeDoArquivo);
+					BufferedImage imagem = ImageIO.read(file);
+					pintando.setFiguras(new ArrayList<Figura>());
+					removeAllFiguraMenu();
+					pintando.setImagemFundo(imagem);
+					file.close();
+				} 
+				catch (FileNotFoundException exc) { exc.printStackTrace(); } 
+				catch (IOException exc) { exc.printStackTrace(); }
+			}
+			if (situacao == JFileChooser.CANCEL_OPTION) {
+				JOptionPane.showMessageDialog(TelaPrincipal.this, "Arquivo nao salvo",
+						"Salvar", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+		else if(e.getSource() == addBorda) {
+			pintando.addBorda();
+		}
+		else if(e.getSource() == removerBorda) {
+			pintando.removerBorda();
+		}
+		else if(e.getSource() == removerFundo) {
+			pintando.setImagemFundo(new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB));
+		}
+		
 	}
 	
 }
