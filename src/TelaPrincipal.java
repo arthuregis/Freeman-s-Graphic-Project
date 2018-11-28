@@ -26,7 +26,8 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 	private PainelDesenho pintando;
 	private String ultimoDiretorioAcessado = "C:\\Users\\arthu\\Downloads";
 	private JMenuItem novo,abrir,salvar,exportar,importar;
-	private JMenuItem addBorda, removerBorda, removerFundo;
+	private JMenuItem addBorda, removerBorda, addPontos, removerFundo, removerPontos;
+	private PainelBotoes botoes;
 	
 	public TelaPrincipal() {
 		super("πntando");
@@ -85,6 +86,12 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 		removerBorda = new JMenuItem("Remover");
 		removerBorda.addActionListener(this);
 		borda.add(removerBorda);
+		addPontos = new JMenuItem("Adicionar Pontos");
+		addPontos.addActionListener(this);
+		borda.add(addPontos);
+		removerPontos = new JMenuItem("Remover Pontos");
+		removerPontos.addActionListener(this);
+		borda.add(removerPontos);
 		edicao.add(borda);
 		
 		JMenu fundo = new JMenu("Imagem Importada");
@@ -96,7 +103,7 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 		pintando = new PainelDesenho(this);
 		add(pintando);
 		
-		PainelBotoes botoes = new PainelBotoes(pintando);
+		botoes = new PainelBotoes(pintando);
 		add(botoes,BorderLayout.NORTH);
 		
 	}
@@ -284,9 +291,12 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 				}
 				}
 				else {
-					pintando.setFiguras(new ArrayList<Figura>());
-					removeAllFiguraMenu();
-					pintando.setImagemFundo(null);
+					remove(pintando);
+					pintando = new PainelDesenho(TelaPrincipal.this);
+					add(pintando);
+					botoes.setPainelAtivo(pintando);
+					repaint();
+					validate();
 				}
 		}
 		else if(e.getSource() == abrir) {
@@ -436,6 +446,19 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 		else if(e.getSource() == removerFundo) {
 			pintando.setImagemFundo(new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB));
 		}
+		else if(e.getSource() == addPontos) {
+			try {
+				int passo = Integer.parseInt(JOptionPane.showInputDialog(pintando, 
+						"Insira o Passo:", "Passo", JOptionPane.PLAIN_MESSAGE));
+				pintando.pegarPontos(passo);
+				
+			}catch(NumberFormatException e1) {
+				JOptionPane.showMessageDialog(pintando, "Insira Apenas valores inteiros positivos",
+						"Valor Invalido", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		else if(e.getSource() == removerPontos)
+			pintando.removerPontos();
 		
 	}
 	

@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -39,6 +40,7 @@ public class PainelDesenho extends JPanel
 	private TelaPrincipal tela;
 	private BufferedImage imagem_fundo;
 	private ArrayList<Point> borda = new ArrayList<>();
+	private ArrayList<Point> pontos = new ArrayList<>();
 	
 	public PainelDesenho(TelaPrincipal tela) {
 		this.tela = tela;
@@ -70,7 +72,13 @@ public class PainelDesenho extends JPanel
 		if(borda.size()>0) {
 			gg.setColor(aux_cor);
 			for(Point ponto:borda)
+				gg.fillOval(ponto.x-1, ponto.y-1, 2, 2);
+		}
+		if(pontos.size()>0) {
+			for(Point ponto:pontos) {
+				gg.setColor(Color.RED);
 				gg.fillOval(ponto.x-2, ponto.y-2, 4, 4);
+			}
 		}
 		
 		for(Figura figura:principal) 
@@ -154,6 +162,90 @@ public class PainelDesenho extends JPanel
 			mousemoved = false;
 		}
 		
+	}
+	
+	public void pegarPontos(int passo) {
+		ArrayList<Point> pontos = new ArrayList<>();
+		BufferedImage plano = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2d = plano.createGraphics();
+		g2d.setColor(getBackground());
+		g2d.fillRect(0, 0, this.getWidth(),this.getHeight());
+		
+		if(borda.size()>0) {
+			g2d.setColor(Color.RED);
+			for(Point ponto:borda)
+				g2d.fillOval(ponto.x-1, ponto.y-1, 2, 2);
+			g2d.dispose();
+			
+			for(int i = (passo/2)+1 ; i < plano.getWidth()-(passo/2); i+=passo) {
+				for(int j = passo; j < plano.getHeight()-passo; j+=passo) {
+					boolean flag=false;
+					
+				/*	if(i==0)
+						for(int x = 0; x<i+(passo/2); x++) {
+							if( plano.getRGB(x,j)!=-1) {
+								pontos.add(new Point(i,j));
+								flag =true;
+								break;
+								}
+						}
+					else if((plano.getWidth()-i)<passo/2 )
+						for(int x = i-(passo/2); x<plano.getWidth(); x++) {
+							if( plano.getRGB(x,j)!=-1) {
+								pontos.add(new Point(i,j));
+								flag =true;
+								break;
+								}
+						}
+					else */
+						for(int x = i-(passo/2); x<i+(passo/2); x++) {
+							if( plano.getRGB(x,j)!=-1) {
+								pontos.add(new Point(i,j));
+								flag =true;
+								break;
+								}
+						}
+					
+				/*	if(j==0 && !flag)
+						for(int y = 0; y < j+(passo/2); y++) {
+							System.out.println("y comp" + y);
+							if(plano.getRGB(i,y)!=-1) {
+								pontos.add(new Point(i,j));
+								flag =true;
+								break;
+							}
+						}
+					else if((plano.getHeight()-j)<passo/2 && !flag)
+						for(int y = j-(passo/2); y < plano.getHeight(); y++) {
+							System.out.println("y comp" + y);
+							if(plano.getRGB(i,y)!=-1) {
+								pontos.add(new Point(i,j));
+								flag =true;
+								break;
+							}
+						}
+					else*/ if(!flag)
+						for(int y = j-(passo/2); y < j+(passo/2); y++) {
+							if(plano.getRGB(i,y)!=-1) {
+								pontos.add(new Point(i,j));
+								break;
+							}
+						}
+				}
+			}
+			this.pontos=pontos;
+			repaint();
+		}
+		else {
+			JOptionPane.showMessageDialog(this, "Desenhe a borda primeiro");
+		}
+		
+		
+	}
+	
+	public void removerPontos() {
+		this.pontos.clear();
+		repaint();
 	}
 	
 	public void removerBorda() {
@@ -917,8 +1009,34 @@ public class PainelDesenho extends JPanel
 		if(tipo_desenho==Desenho.FREEMAN && aux_figura.getPonto()!=null && aux_figura.getPasso()>0) {
 			try {
 				int aux = Integer.parseInt(""+e.getKeyChar());
-				if(aux<0 || aux>7)
-					throw new NumberFormatException();;
+				switch(aux) {
+					case 6:
+						aux = 0;
+						break;
+					case 9:
+						aux = 1;
+						break;
+					case 8:
+						aux = 2;
+						break;
+					case 7:
+						aux = 3;
+						break;
+					case 4:
+						break;
+					case 1:
+						aux = 5;
+						break;
+					case 2:
+						aux = 6;
+						break;
+					case 3:
+						aux = 7;
+						break;
+					default:
+						throw new NumberFormatException();
+							
+				}
 				aux_figura.addCodigo(aux);
 				mousemoved = false;
 				repaint();
@@ -928,9 +1046,13 @@ public class PainelDesenho extends JPanel
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (tipo_desenho==Desenho.FREEMAN && e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if(aux_figura.getPonto()!=null)
+		if (tipo_desenho==Desenho.FREEMAN ) {
+			if(aux_figura.getPonto()!=null && e.getKeyCode() == KeyEvent.VK_ENTER)
 				newFigura();
+			else if(aux_figura.getCodigo()!=null && e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+				aux_figura.removerCodigo();
+				repaint();
+			}
 		}
 		
 	}

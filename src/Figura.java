@@ -52,7 +52,7 @@ public class Figura implements Serializable{
 		}
 	}
 	
-public void addCodigo(int cod) {
+	public void addCodigo(int cod) {
 		int codigos[] = {cod};
 		if(codigo == null)
 			codigo = codigos;
@@ -62,6 +62,17 @@ public void addCodigo(int cod) {
 				finalcods[i] = codigo[i];
 			for(int i = 0; i<codigos.length; i++)
 				finalcods[codigo.length+i] = codigos[i];
+			codigo = finalcods;
+		}
+	}
+	
+	public void removerCodigo() {
+		if(codigo.length == 1)
+			codigo = null;		
+		else{
+			int finalcods[] = new int[codigo.length-1];
+			for(int i = 0 ; i<finalcods.length; i++)
+				finalcods[i] = codigo[i];
 			codigo = finalcods;
 		}
 	}
