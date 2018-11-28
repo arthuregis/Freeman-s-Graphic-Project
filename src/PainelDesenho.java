@@ -177,60 +177,24 @@ public class PainelDesenho extends JPanel
 				g2d.fillOval(ponto.x-1, ponto.y-1, 2, 2);
 			g2d.dispose();
 			
-			for(int i = (passo/2)+1 ; i < plano.getWidth()-(passo/2); i+=passo) {
-				for(int j = passo; j < plano.getHeight()-passo; j+=passo) {
+			for(int i = passo/2+1; i < plano.getWidth()-(passo/2) ; i+=passo) {
+				for(int j = passo/2+1 ; j < plano.getHeight()-(passo/2) ; j+=passo) {
 					boolean flag=false;
-					
-				/*	if(i==0)
-						for(int x = 0; x<i+(passo/2); x++) {
+			
+						for(int x = i-(passo/2)-1; x<i+(passo/2)-1; x++) {
 							if( plano.getRGB(x,j)!=-1) {
 								pontos.add(new Point(i,j));
 								flag =true;
 								break;
 								}
 						}
-					else if((plano.getWidth()-i)<passo/2 )
-						for(int x = i-(passo/2); x<plano.getWidth(); x++) {
-							if( plano.getRGB(x,j)!=-1) {
-								pontos.add(new Point(i,j));
-								flag =true;
-								break;
+						if(!flag)
+							for(int y = j-(passo/2)-1; y < j+(passo/2)-1; y++) {
+								if(plano.getRGB(i,y)!=-1) {
+									pontos.add(new Point(i,j));
+									break;
 								}
-						}
-					else */
-						for(int x = i-(passo/2); x<i+(passo/2); x++) {
-							if( plano.getRGB(x,j)!=-1) {
-								pontos.add(new Point(i,j));
-								flag =true;
-								break;
-								}
-						}
-					
-				/*	if(j==0 && !flag)
-						for(int y = 0; y < j+(passo/2); y++) {
-							System.out.println("y comp" + y);
-							if(plano.getRGB(i,y)!=-1) {
-								pontos.add(new Point(i,j));
-								flag =true;
-								break;
 							}
-						}
-					else if((plano.getHeight()-j)<passo/2 && !flag)
-						for(int y = j-(passo/2); y < plano.getHeight(); y++) {
-							System.out.println("y comp" + y);
-							if(plano.getRGB(i,y)!=-1) {
-								pontos.add(new Point(i,j));
-								flag =true;
-								break;
-							}
-						}
-					else*/ if(!flag)
-						for(int y = j-(passo/2); y < j+(passo/2); y++) {
-							if(plano.getRGB(i,y)!=-1) {
-								pontos.add(new Point(i,j));
-								break;
-							}
-						}
 				}
 			}
 			this.pontos=pontos;
@@ -257,7 +221,6 @@ public class PainelDesenho extends JPanel
 		ArrayList<Point> coordenadas = new ArrayList<>();
 		ArrayList<Point> borda = new ArrayList<>();
 		BufferedImage img = exportar();
-		
 		for(int i = 0 ; i < img.getHeight(); i++) {
 			for(int j = 0; j < img.getWidth(); j++) {
 				if(img.getRGB(j,i)!=-1) {
@@ -266,9 +229,10 @@ public class PainelDesenho extends JPanel
 			}
 		}
 		
+		if(coordenadas.size()>0)
 		
 		for(int i = 0 ; i <coordenadas.size(); i++) {
-			if(coordenadas.get(i).y==coordenadas.get(0).y)
+			if(coordenadas.get(i).y==coordenadas.get(0).y) 
 				borda.add(coordenadas.get(i));
 			else if( ! coordenadas.get(i-1).equals(
 					new Point(coordenadas.get(i).x-1,
@@ -294,6 +258,8 @@ public class PainelDesenho extends JPanel
 				}
 			}
 		}
+		
+		if(coordenadas.size()>0)
 		
 		for(int i = 0 ; i <coordenadas.size(); i++) {
 			if(coordenadas.get(i).x==coordenadas.get(0).x)
