@@ -1010,21 +1010,21 @@ public class PainelDesenho extends JPanel
 				char aux = e.getKeyChar();
 				int codigo = 10;
 				
-				if(aux=='d')
+				if(aux=='d' || aux=='D')
 					codigo=0;
-				else if(aux=='e')
+				else if(aux=='e' || aux=='E')
 					codigo=1;
-				else if(aux=='w')
+				else if(aux=='w' || aux=='W')
 					codigo=2;
-				else if(aux=='q')
+				else if(aux=='q' || aux=='Q')
 					codigo=3;
-				else if(aux=='a')
+				else if(aux=='a' || aux=='A')
 					codigo=4;
-				else if(aux=='z')
+				else if(aux=='z' || aux=='Z')
 					codigo=5;
-				else if(aux=='x')
+				else if(aux=='x' || aux=='X')
 					codigo=6;
-				else if(aux=='c')
+				else if(aux=='c' || aux=='C')
 					codigo=7;
 				
 				if(codigo!=10) {
