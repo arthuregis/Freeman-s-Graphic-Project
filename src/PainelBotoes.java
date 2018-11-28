@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,31 +34,36 @@ public class PainelBotoes extends JPanel implements ActionListener{
 		acoes.setBackground(Color.DARK_GRAY);
 		acoes.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		
-		livre = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\imagens\\livre.png"));
+		String url = getClass().getResource(".").toString();
+		url = url.replace("file:/","");
+		url = url.replace("/","\\");
+		url = url.replace("bin\\", "imagens\\");
+		
+		livre = new JButton(new ImageIcon(url+"livre.png"));
 		livre.setMargin(new Insets(1,1,1,1));
 		livre.setToolTipText("Livre");
 		livre.addActionListener(this);
 		figuras.add(livre);
 		
-		cadeiaFreeman = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\imagens\\freeman.png"));
+		cadeiaFreeman = new JButton(new ImageIcon(url+"freeman.png"));
 		cadeiaFreeman.setMargin(new Insets(1,1,1,1));
 		cadeiaFreeman.setToolTipText("Freeman");
 		cadeiaFreeman.addActionListener(this);
 		figuras.add(cadeiaFreeman);
 		
-		quadrado = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\imagens\\quadrado.png"));
+		quadrado = new JButton(new ImageIcon(url+"quadrado.png"));
 		quadrado.setMargin(new Insets(1,1,1,1));
 		quadrado.setToolTipText("Quadrado");
 		quadrado.addActionListener(this);
 		figuras.add(quadrado);
 		
-		triangulo = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\imagens\\triangulo.png"));
+		triangulo = new JButton(new ImageIcon(url+"triangulo.png"));
 		triangulo.setMargin(new Insets(1,1,1,1));
 		triangulo.setToolTipText("Triangulo");
 		triangulo.addActionListener(this);
 		figuras.add(triangulo);
 		
-		reta = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\imagens\\reta.png"));
+		reta = new JButton(new ImageIcon(url+"reta.png"));
 		reta.setMargin(new Insets(1,1,1,1));
 		reta.setToolTipText("Reta");
 		reta.addActionListener(this);
@@ -74,24 +80,24 @@ public class PainelBotoes extends JPanel implements ActionListener{
 		cor2.add(cor);
 		cores.add(cor2);
 		
-		desfazer = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\imagens\\undo.png"));
+		desfazer = new JButton(new ImageIcon(url+"undo.png"));
 		desfazer.setMargin(new Insets(1,1,1,1));
 		desfazer.setToolTipText("Desfazer");
 		desfazer.addActionListener(this);
 		acoes.add(desfazer);
 		
-		refazer = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\imagens\\redo.png"));
+		refazer = new JButton(new ImageIcon(url+"redo.png"));
 		refazer.setMargin(new Insets(1,1,1,1));
 		refazer.setToolTipText("Refazer");
 		refazer.addActionListener(this);
 		acoes.add(refazer);
 		
-		limpar = new JButton(new ImageIcon("C:\\Users\\arthu\\eclipse-workspace\\FREEMAN\\imagens\\lixeira.png"));
+		limpar = new JButton(new ImageIcon(url+"lixeira.png"));
 		limpar.setMargin(new Insets(1,1,1,1));
 		limpar.setToolTipText("Limpar");
 		limpar.addActionListener(this);
 		acoes.add(limpar);
-	
+		
 		add(figuras);
 		add(cores);
 		add(acoes);
