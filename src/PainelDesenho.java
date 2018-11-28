@@ -1006,7 +1006,35 @@ public class PainelDesenho extends JPanel
 				aux_figura.addCodigo(aux);
 				mousemoved = false;
 				repaint();
-			}catch(NumberFormatException e1) {}
+			}catch(NumberFormatException e1) {
+				char aux = e.getKeyChar();
+				int codigo = 10;
+				
+				if(aux=='d')
+					codigo=0;
+				else if(aux=='e')
+					codigo=1;
+				else if(aux=='w')
+					codigo=2;
+				else if(aux=='q')
+					codigo=3;
+				else if(aux=='a')
+					codigo=4;
+				else if(aux=='z')
+					codigo=5;
+				else if(aux=='x')
+					codigo=6;
+				else if(aux=='c')
+					codigo=7;
+				
+				if(codigo!=10) {
+					aux_figura.addCodigo(codigo);
+					mousemoved = false;
+					repaint();
+				}
+					
+				
+			}
 		}
 	}
 
