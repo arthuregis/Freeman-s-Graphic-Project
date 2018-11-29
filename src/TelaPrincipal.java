@@ -46,7 +46,7 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 		abrir.addActionListener(this);
 		arquivo.add(abrir);
 		
-		JMenuItem salvar = new JMenuItem("Salvar");
+		salvar = new JMenuItem("Salvar");
 		salvar.addActionListener(this);
 		arquivo.add(salvar);
 		arquivo.addSeparator();
@@ -337,6 +337,7 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 			}
 		}
 		else if(e.getSource() == salvar) {
+			System.out.println("oi");
 			String nomeDoArquivo;
 			JFileChooser escolhedorDeArquivos = new JFileChooser(ultimoDiretorioAcessado);
 			escolhedorDeArquivos.setFileFilter(new FileFilter() {

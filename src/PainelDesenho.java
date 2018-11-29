@@ -218,65 +218,26 @@ public class PainelDesenho extends JPanel
 	}
 	
 	public void addBorda() {
-		ArrayList<Point> coordenadas = new ArrayList<>();
 		ArrayList<Point> borda = new ArrayList<>();
 		BufferedImage img = exportar();
-		for(int i = 0 ; i < img.getHeight(); i++) {
-			for(int j = 0; j < img.getWidth(); j++) {
-				if(img.getRGB(j,i)!=-1) {
-				coordenadas.add(new Point(j,i));
-				}
-			}
-		}
-		
-		if(coordenadas.size()>0)
-		
-		for(int i = 0 ; i <coordenadas.size(); i++) {
-			if(coordenadas.get(i).y==coordenadas.get(0).y) 
-				borda.add(coordenadas.get(i));
-			else if( ! coordenadas.get(i-1).equals(
-					new Point(coordenadas.get(i).x-1,
-							coordenadas.get(i).y))) {
-				borda.add(coordenadas.get(i));
-			}
-			else if( (i+1)<coordenadas.size() &&
-					! coordenadas.get(i+1).equals(
-							new Point(coordenadas.get(i).x+1,
-									coordenadas.get(i).y))) {
-				borda.add(coordenadas.get(i));
-			}
-			else if(i+1 == coordenadas.size())
-				borda.add(coordenadas.get(i));
-		}
-		
-		coordenadas.clear();
-		
 		for(int i = 0 ; i < img.getWidth(); i++) {
-			for(int j = 0; j < img.getHeight(); j++) {
-				if(img.getRGB(i,j)!=-1) {
-				coordenadas.add(new Point(i,j));
-				}
+			for(int j = 1; j < img.getHeight(); j++) {
+				if(img.getRGB(i,j-1)==-1 && img.getRGB(i,j)!=-1)
+					borda.add(new Point(i,j));
+				else if(img.getRGB(i,j-1)!=-1 && img.getRGB(i,j)==-1)
+					borda.add(new Point(i,j));
 			}
 		}
 		
-		if(coordenadas.size()>0)
 		
-		for(int i = 0 ; i <coordenadas.size(); i++) {
-			if(coordenadas.get(i).x==coordenadas.get(0).x)
-				borda.add(coordenadas.get(i));
-			else if( ! coordenadas.get(i-1).equals(
-					new Point(coordenadas.get(i).x,
-							coordenadas.get(i).y-1))) {
-				borda.add(coordenadas.get(i));
+		
+		for(int i = 0 ; i < img.getHeight(); i++) {
+			for(int j = 1; j < img.getWidth(); j++) {
+				if(img.getRGB(j-1,i)==-1 && img.getRGB(j,i)!=-1)
+					borda.add(new Point(j,i));
+				else if(img.getRGB(j-1,i)!=-1 && img.getRGB(j,i)==-1)
+					borda.add(new Point(j,i));
 			}
-			else if( (i+1)<coordenadas.size() &&
-					! coordenadas.get(i+1).equals(
-							new Point(coordenadas.get(i).x,
-									coordenadas.get(i).y+1))) {
-				borda.add(coordenadas.get(i));
-			}
-			else if(i+1 == coordenadas.size())
-				borda.add(coordenadas.get(i));
 		}
 		
 		this.borda = borda;
