@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -12,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -23,24 +25,18 @@ import javax.swing.JTextField;
 public class PainelDesenho extends JPanel 
 	implements MouseListener,MouseMotionListener,ActionListener,KeyListener{
 	private static final long serialVersionUID = 1L;
-	private ArrayList<Figura> principal = new ArrayList<>();
-	private ArrayList<Figura> lixeira = new ArrayList<>();
+	private ArrayList<Figura> principal,lixeira;
+	private ArrayList<Point> borda,pontos;
 	private Color aux_cor = Color.BLACK;
-	private Figura aux_figura = new Figura(aux_cor);
-	private Point aux_ponto = new Point();
-	private Point aux_ponto2 = new Point();
-	private int aux_cod;
-	private int tipo_desenho = Desenho.DEFAULT;
-	private JPanel aux_painel = new JPanel();
-	private JLabel aux_label = new JLabel();
-	private JTextField aux_texto = new JTextField(30);
-	private boolean mousemoved = false;
-	private boolean limpar = false;
-	private boolean saved = true;
+	private Figura aux_figura;
+	private Point aux_ponto,aux_ponto2;
+	private int aux_cod,tipo_desenho;
+	private JPanel aux_painel;
+	private JLabel aux_label;
+	private JTextField aux_texto;
+	private boolean mousemoved,limpar,saved;
 	private TelaPrincipal tela;
 	private BufferedImage imagem_fundo;
-	private ArrayList<Point> borda = new ArrayList<>();
-	private ArrayList<Point> pontos = new ArrayList<>();
 	
 	public PainelDesenho(TelaPrincipal tela) {
 		this.tela = tela;
@@ -49,6 +45,20 @@ public class PainelDesenho extends JPanel
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addKeyListener(this);
+		principal = new ArrayList<>();
+		lixeira = new ArrayList<>();
+		borda = new ArrayList<>();
+		pontos = new ArrayList<>();
+		aux_figura = new Figura(aux_cor);
+		aux_ponto = new Point();
+		aux_ponto2 = new Point();
+		tipo_desenho = Desenho.DEFAULT;
+		aux_painel = new JPanel();
+		aux_label = new JLabel();
+		aux_texto = new JTextField(30);
+		mousemoved = false;
+		limpar = false;
+		saved = true;
 		
 		aux_painel.setLayout(new FlowLayout());
 		aux_painel.add(aux_label);
@@ -72,7 +82,7 @@ public class PainelDesenho extends JPanel
 		if(borda.size()>0) {
 			gg.setColor(aux_cor);
 			for(Point ponto:borda)
-				gg.fillOval(ponto.x-1, ponto.y-1, 2, 2);
+				gg.fillRect(ponto.x, ponto.y, 1, 1);
 		}
 		if(pontos.size()>0) {
 			for(Point ponto:pontos) {
@@ -172,9 +182,9 @@ public class PainelDesenho extends JPanel
 		g2d.fillRect(0, 0, this.getWidth(),this.getHeight());
 		
 		if(borda.size()>0) {
-			g2d.setColor(Color.RED);
+			g2d.setColor(Color.BLACK);
 			for(Point ponto:borda)
-				g2d.fillOval(ponto.x-1, ponto.y-1, 2, 2);
+				g2d.fillRect(ponto.x, ponto.y, 1, 1);
 			g2d.dispose();
 			
 			for(int i = passo/2+1; i < plano.getWidth()-(passo/2) ; i+=passo) {
@@ -225,18 +235,16 @@ public class PainelDesenho extends JPanel
 				if(img.getRGB(i,j-1)==-1 && img.getRGB(i,j)!=-1)
 					borda.add(new Point(i,j));
 				else if(img.getRGB(i,j-1)!=-1 && img.getRGB(i,j)==-1)
-					borda.add(new Point(i,j));
+					borda.add(new Point(i,j-1));
 			}
 		}
-		
-		
 		
 		for(int i = 0 ; i < img.getHeight(); i++) {
 			for(int j = 1; j < img.getWidth(); j++) {
 				if(img.getRGB(j-1,i)==-1 && img.getRGB(j,i)!=-1)
 					borda.add(new Point(j,i));
 				else if(img.getRGB(j-1,i)!=-1 && img.getRGB(j,i)==-1)
-					borda.add(new Point(j,i));
+					borda.add(new Point(j-1,i));
 			}
 		}
 		
