@@ -386,18 +386,18 @@ public class PainelDesenho extends JPanel
 		repaint();
 	}
 	
-	private int[] doReta(int tamanho,int prop, int aux, int codigo1, int codigo2){
+	private int[] doReta(int tamanho,int prop, int aux, int cod_excesso, int cod_minoria){
 		int codigos[] = new int[tamanho];
 		int flag = 0;
 		for(int i = 0; i <tamanho ;i++){
 			if((i+1)%aux == 0)
-				codigos[i]=codigo1;
+				codigos[i]=cod_excesso;
 			else{
 				if(flag==0){
-					codigos[i]=codigo2;
+					codigos[i]=cod_minoria;
 					flag=prop;
 				}else{
-					codigos[i]=codigo1;
+					codigos[i]=cod_excesso;
 					flag--;
 				}
 			}
@@ -405,14 +405,16 @@ public class PainelDesenho extends JPanel
 		return codigos;
 	}
 	
-	private int[] doLivre(int tamanho,int cont, int resto, int diagonal, int reta) {
+	private int[] doLivre(int tamanho,int cont, int resto,int distrib, int diagonal, int reta) {
 		int codigos[] = new int[tamanho];
-		int flag = 1;
+		int flag = 1, flag2 =0;
 		for(int i = 0; i<tamanho; i++) {
 			if(flag==cont) {
 				codigos[i] = diagonal;
 				flag = 1;
-				if(resto>0  ) {
+				flag2++;
+				if(resto>0 && flag2==distrib) {
+					flag2=0;
 					codigos[++i]=reta;
 					resto--;
 				}
@@ -431,7 +433,7 @@ public class PainelDesenho extends JPanel
 			int x = e.getX() - aux_ponto.x ;
 
 			int codigos[];
-			int cont,resto,tamanho;
+			int cont,resto,tamanho,distrib;
 			int yd = Math.abs(y);
 			int xd = Math.abs(x);
 			
@@ -445,6 +447,10 @@ public class PainelDesenho extends JPanel
 					cont = xd+1;
 					resto=0;
 				}
+				if(resto>0)
+					distrib=yd/resto;
+				else
+					distrib=0;
 			}else {
 				tamanho = yd;
 				if(xd!=0) {
@@ -455,34 +461,38 @@ public class PainelDesenho extends JPanel
 					cont = yd+1;
 					resto=0;
 				}
+				if(resto>0)
+					distrib=xd/resto;
+				else
+					distrib=0;
 			}
 						
 			if(x>=0) {
 				if(y<0) {
 					if(xd>yd) {
-						codigos = doLivre(tamanho,cont,resto,1,0);
+						codigos = doLivre(tamanho,cont,resto,distrib,1,0);
 					}else {
-						codigos = doLivre(tamanho,cont,resto,1,2);
+						codigos = doLivre(tamanho,cont,resto,distrib,1,2);
 					}
 				}else {
 					if(xd>yd) {
-						codigos = doLivre(tamanho,cont,resto,7,0);
+						codigos = doLivre(tamanho,cont,resto,distrib,7,0);
 					}else {
-						codigos = doLivre(tamanho,cont,resto,7,6);
+						codigos = doLivre(tamanho,cont,resto,distrib,7,6);
 					}
 				}
 			}else {
 				if(y<0) {
 					if(xd>yd) {
-						codigos = doLivre(tamanho,cont,resto,3,4);
+						codigos = doLivre(tamanho,cont,resto,distrib,3,4);
 					}else {
-						codigos = doLivre(tamanho,cont,resto,3,2);
+						codigos = doLivre(tamanho,cont,resto,distrib,3,2);
 					}
 				}else {
 					if(xd>yd) {
-						codigos = doLivre(tamanho,cont,resto,5,4);
+						codigos = doLivre(tamanho,cont,resto,distrib,5,4);
 					}else {
-						codigos = doLivre(tamanho,cont,resto,5,6);
+						codigos = doLivre(tamanho,cont,resto,distrib,5,6);
 					}
 				}
 			}
