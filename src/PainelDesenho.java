@@ -306,12 +306,12 @@ public class PainelDesenho extends JPanel
 	}
 	
 	private void salvarFigura(Figura figura) {
+		saved = false;
 		principal.add(figura);
 		tela.addFiguraMenu(figura, principal.size());
 	}
 	
 	private void newFigura(){
-		saved = false;
 		removePainelAuxiliar();
 		if(aux_figura.getPonto()!=null)
 			lixeira.clear();
