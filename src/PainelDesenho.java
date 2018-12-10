@@ -346,6 +346,17 @@ public class PainelDesenho extends JPanel
 					((this.getWidth()/2)-(imagem_fundo.getWidth()/2)) ,
 					((this.getHeight()/2)-(imagem_fundo.getHeight()/2))
 					);
+		if(borda.size()>0) {
+			g2d.setColor(aux_cor);
+			for(Point ponto:borda)
+				g2d.fillRect(ponto.x, ponto.y, 1, 1);
+		}
+		if(pontos.size()>0) {
+			for(Point ponto:pontos) {
+				g2d.setColor(Color.RED);
+				g2d.fillOval(ponto.x-2, ponto.y-2, 4, 4);
+			}
+		}
 		
 		g2d.setStroke(new BasicStroke(2f));
 		for(Figura figura:principal) 
@@ -605,7 +616,7 @@ public class PainelDesenho extends JPanel
 			int xd = Math.abs(x);
 			int yd = Math.abs(y);
 			
-			if(xd>yd && yd<(xd/2)) {
+			if(yd<(xd/2)) {
 				aux_figura.setPasso(xd/2);
 				if(y2>y1) {
 					if(x2>x1) {
@@ -626,7 +637,7 @@ public class PainelDesenho extends JPanel
 				}
 				
 			}
-			else if(yd>xd && xd<(yd/2)) {
+			else if(xd<(yd/2)) {
 				aux_figura.setPasso(yd/2);
 				if(y2>y1) {
 					if(x2>x1) {

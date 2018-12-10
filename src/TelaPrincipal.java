@@ -390,12 +390,14 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 					FileOutputStream file = new FileOutputStream (nomeDoArquivo);
 					ImageIO.write(pintando.exportar(),"png", file);
 					file.close();
-					FileOutputStream fos = new FileOutputStream(nomeDoArquivo.replace(".png", ".pnt"));
-					ObjectOutputStream oos = new ObjectOutputStream(fos);
-					oos.writeObject(pintando.getFiguras());
-					fos.close();
-					oos.close();
-					pintando.setSaved();
+					if(pintando.getFiguras().size()>0) {
+						FileOutputStream fos = new FileOutputStream(nomeDoArquivo.replace(".png", ".pnt"));
+						ObjectOutputStream oos = new ObjectOutputStream(fos);
+						oos.writeObject(pintando.getFiguras());
+						fos.close();
+						oos.close();
+						pintando.setSaved();
+					}
 				} 
 				catch (FileNotFoundException exc) { exc.printStackTrace(); } 
 				catch (IOException exc) { exc.printStackTrace(); }
@@ -432,10 +434,6 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 				} 
 				catch (FileNotFoundException exc) { exc.printStackTrace(); } 
 				catch (IOException exc) { exc.printStackTrace(); }
-			}
-			if (situacao == JFileChooser.CANCEL_OPTION) {
-				JOptionPane.showMessageDialog(TelaPrincipal.this, "Arquivo nao salvo",
-						"Salvar", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 		else if(e.getSource() == addBorda) {
