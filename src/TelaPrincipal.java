@@ -108,33 +108,33 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 		
 	}
 	
-	private void addMenuRotacaoH(Figura figura, int indice) {
+	private void addMenuRotacaoH(FiguraFreeman figura, int indice) {
 		JMenuItem item = new JMenuItem("Figura "+indice);
 		item.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				rotacionarH(figura);
+				figura.rotacionarH();
 				pintando.repaint();
 			}
 		});
 		rot_horario.add(item);
 	}
 	
-	private void addMenuRotacaoAH(Figura figura, int indice) {
+	private void addMenuRotacaoAH(FiguraFreeman figura, int indice) {
 		JMenuItem item = new JMenuItem("Figura "+indice);
 		item.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				rotacionarAH(figura);
+				figura.rotacionarAH();
 				pintando.repaint();
 			}
 		});
 		rot_anti.add(item);
 	}
 	
-	private void addMenuPasso(Figura figura, int indice) {
+	private void addMenuPasso(FiguraFreeman figura, int indice) {
 		JMenuItem item = new JMenuItem("Figura "+indice);
 		item.addActionListener(new ActionListener() {
 
@@ -155,36 +155,34 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 		passo.add(item);
 	}
 	
-	private void addMenuCopiar(Figura figura, int indice) {
+	private void addMenuCopiar(FiguraFreeman figura, int indice) {
 		JMenuItem item = new JMenuItem("Figura "+indice);
 		item.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Figura aux = new Figura(figura.getCor());
-				aux.setCodigo(figura.getCodigo().clone());
-				aux.setPasso(figura.getPasso());
-				pintando.setTipoDesenho(Desenho.COPIAR);
+				FiguraFreeman aux = figura.clone();
+				pintando.setTipoDesenho(FiguraFreeman.COPIAR);
 				pintando.setFiguraAuxiliar(aux);
 			}
 		});
 		copiar.add(item);
 	}
 	
-	private void addMenuMover(Figura figura, int indice) {
+	private void addMenuMover(FiguraFreeman figura, int indice) {
 		JMenuItem item = new JMenuItem("Figura "+indice);
 		item.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				pintando.setTipoDesenho(Desenho.MOVER);
+				pintando.setTipoDesenho(FiguraFreeman.MOVER);
 				pintando.setFiguraAuxiliar(figura);
 			}
 		});
 		mover.add(item);
 	}
 	
-	public void addFiguraMenu(Figura figura, int indice) {
+	public void addFiguraMenu(FiguraFreeman figura, int indice) {
 		addMenuRotacaoH(figura,indice);
 		addMenuRotacaoAH(figura,indice);
 		addMenuPasso(figura,indice);
@@ -207,72 +205,6 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 		copiar.removeAll();
 		mover.removeAll();
 	}
-	
-	private void rotacionarH(Figura figura) {
-		int codigos[] = figura.getCodigo();
-		
-		for(int i = 0; i<codigos.length; i++) {
-			switch(codigos[i]) {
-			case 0:
-				codigos[i] = 6;
-				break;
-			case 1:
-				codigos[i] = 7;
-				break;
-			case 2:
-				codigos[i] = 0;
-				break;
-			case 3:
-				codigos[i] = 1;
-				break;
-			case 4:
-				codigos[i] = 2;
-				break;
-			case 5:
-				codigos[i] = 3;
-				break;
-			case 6:
-				codigos[i] = 4;
-				break;
-			case 7:
-				codigos[i] = 5;
-				break;
-			}
-		};
-	}
-	
-	private void rotacionarAH(Figura figura) {
-		int codigos[] = figura.getCodigo();
-		
-		for(int i = 0; i<codigos.length; i++) {
-			switch(codigos[i]) {
-			case 0:
-				codigos[i] = 2;
-				break;
-			case 1:
-				codigos[i] = 3;
-				break;
-			case 2:
-				codigos[i] = 4;
-				break;
-			case 3:
-				codigos[i] = 5;
-				break;
-			case 4:
-				codigos[i] = 6;
-				break;
-			case 5:
-				codigos[i] = 7;
-				break;
-			case 6:
-				codigos[i] = 0;
-				break;
-			case 7:
-				codigos[i] = 1;
-				break;
-			}
-		}
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -285,7 +217,7 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 						"Novo Desenho", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
 						null, opcoes, opcoes[0]);
 				if (i == JOptionPane.YES_OPTION) {
-					pintando.setFiguras(new ArrayList<Figura>());
+					pintando.setFiguras(new ArrayList<FiguraFreeman>());
 					removeAllFiguraMenu();
 					pintando.setImagemFundo(null);
 				}
@@ -328,7 +260,7 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 						Object obj = ois.readObject();
 						fis.close();
 						ois.close();
-						pintando.setFiguras((ArrayList<Figura>) obj);
+						pintando.setFiguras((ArrayList<FiguraFreeman>) obj);
 					} 
 					catch (FileNotFoundException exc) { exc.printStackTrace(); } 
 					catch (IOException exc) { exc.printStackTrace(); }
@@ -427,7 +359,7 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 				try {
 					FileInputStream file = new FileInputStream (nomeDoArquivo);
 					BufferedImage imagem = ImageIO.read(file);
-					pintando.setFiguras(new ArrayList<Figura>());
+					pintando.setFiguras(new ArrayList<FiguraFreeman>());
 					removeAllFiguraMenu();
 					pintando.setImagemFundo(imagem);
 					file.close();

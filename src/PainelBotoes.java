@@ -110,15 +110,15 @@ public class PainelBotoes extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == livre)
-			painel_ativo.setTipoDesenho(Desenho.LIVRE);
+			painel_ativo.setTipoDesenho(FiguraFreeman.LIVRE);
 		else if(e.getSource() == cadeiaFreeman)
-			painel_ativo.setTipoDesenho(Desenho.FREEMAN);
+			painel_ativo.setTipoDesenho(FiguraFreeman.FREEMAN);
 		else if(e.getSource() == quadrado)
-			painel_ativo.setTipoDesenho(Desenho.QUADRADO);
+			painel_ativo.setTipoDesenho(FiguraFreeman.QUADRADO);
 		else if(e.getSource() == triangulo)
-			painel_ativo.setTipoDesenho(Desenho.TRIANGULO);
+			painel_ativo.setTipoDesenho(FiguraFreeman.TRIANGULO);
 		else if(e.getSource() == reta)
-			painel_ativo.setTipoDesenho(Desenho.RETA);
+			painel_ativo.setTipoDesenho(FiguraFreeman.RETA);
 		else if(e.getSource() == cor) {
 			Color color = JColorChooser.showDialog(painel_ativo,"painel_ativo de Cores", Color.BLACK);
 			if(color!=null) {
